@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTK 排行计算器</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+</head>
+
+<body>
+  <h2>三角洲行动 TTK计算器</h2>
+  
+  <div class="control-group">
+    <label for="bulletLevel">子弹等级</label>
+    <select id="bulletLevel">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4" selected>4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+  
+  <div class="control-group">
+    <label for="armorLevel">护甲等级</label>
+    <select id="armorLevel">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4" selected>4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+    <label for="armorValue">护甲值</label>
+    <input type="number" id="armorValue" value="80" min="0" max="200">
+  </div>
+
+  <div class="control-group">
+    <label for="helmetLevel">头盔等级</label>
+    <select id="helmetLevel">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4" selected>4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+    <label for="helmetValue">头盔值</label>
+    <input type="number" id="helmetValue" value="35" min="0" max="100">
+  </div>
+  
+  <div class="control-group" id="distance-group">
+    <label for="distance">交战距离 (m)</label>
+    <input type="number" id="distance" value="30" min="0">
+  </div>
+  
+  <fieldset class="control-group">
+    <legend>击中部位概率</legend>
+    <div class="prob-item">
+      <label>头部:</label><input type="number" id="pHead" value="0.18" step="0.01" min="0" max="1">
+      <label>胸部:</label><input type="number" id="pChest" value="0.3" step="0.01" min="0" max="1">
+      <label>腹部:</label><input type="number" id="pStomach" value="0.22" step="0.01" min="0" max="1">
+      <label>四肢:</label><input type="number" id="pLimbs" value="0.3" step="0.01" min="0" max="1">
+    </div>
+  </fieldset>
+  
+  <div class="control-group">
+    <label for="triggerDelayEnable">扳机延迟</label>
+    <input type="checkbox" id="triggerDelayEnable" checked>
+    <label for="muzzlePrecisionEnable">枪口初速满精校</label>
+    <input type="checkbox" id="muzzlePrecisionEnable" checked>
+    <label for="hitRate">命中率:</label>
+    <input type="number" id="hitRate" value="0.85" min="0" max="1" step="0.01">
+  </div>
+
+  <div class="buttons-container">
+    <button id="calcBtn">生成TTK排行榜</button>
+    <button id="distChartBtn">生成TTK折线图</button>
+  </div>
+  
+  <div class="canvas-container">
+    <canvas id="ttkChart" width="800" height="400"></canvas>
+  </div>
+  
+  <div class="canvas-container">
+    <canvas id="distanceChart" width="800" height="400"></canvas>
+  </div>
+
+  <table id="attachmentTable">
+    <thead>
+      <tr>
+        <th>武器</th>
+        <th>类型</th>
+        <th>射速</th>
+        <th>初速</th>
+        <th>射程</th>
+        <th>基础伤害</th>
+        <th>护甲伤害</th>
+        <th>枪管</th>
+        <th>枪口</th>
+        <th>子弹类型</th>
+        <th>命中率</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module" src="./bundle.js"></script>
+</body>
+
+</html>

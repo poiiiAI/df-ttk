@@ -1,0 +1,150 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  /* 如果实在太窄会自动换行 */
+  gap: 4px 12px;
+  /* 行间距 4px，控件间距 12px */
+  margin-bottom: 8px;
+  /* 底部留点空 */
+}
+
+/* 2. 对“交战距离”那一行强制不换行 */
+.control-group#distance-group {
+  white-space: nowrap;
+}
+
+/* 3. fieldset 下的击中概率 改成两列 grid */
+fieldset.control-group {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 8px;
+  max-width: 340px;
+  /* 或者你想要的宽度 */
+}
+
+/* 4. 让 label 宽度自适应，控件更紧凑 */
+.control-group label {
+  width: auto;
+  min-width: 45px;
+  font-size: 0.9rem;
+  margin-right: 0px; /* 进一步减少label和控件之间的间距 */
+}
+
+
+/* 5. select 和 input 宽度微调 */
+.control-group select,
+.control-group input[type="number"] {
+  width: auto;
+  max-width: 50px;
+  font-size: 0.9rem;
+}
+
+/* 6. checkbox 样式调整，让它们更紧凑 */
+.control-group input[type="checkbox"] {
+  margin: 0;
+  margin-left: -10px; /* 进一步减少checkbox和label之间的间距 */
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+}
+
+input[type="number"] {
+  width: 60px;
+}
+
+/* 美化按钮 */
+button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color .2s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* 按钮区水平排列 */
+.buttons-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* 画布也放卡片里 */
+.canvas-container {
+  background: #fff;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.prob-item label {
+  width: auto;      /* 根据文字长度自适应 */
+  min-width: 1;     /* 取消原来给 control-group label 的最小宽 */
+  margin: 0;        /* 去掉多余外边距 */
+  padding: 0;       /* 去掉内边距 */
+  font-size: 0.9rem;
+}
+
+/* 再减小一下项内间距 */
+.prob-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;         /* 原来是 4px，可根据需要再调小 */
+}
+
+/* 表格基础数据居中显示 */
+#attachmentTable td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 武器名称列左对齐 */
+#attachmentTable td:first-child {
+  text-align: left;
+}
+
+/* 枪管和枪口列左对齐 */
+#attachmentTable td:nth-child(7),
+#attachmentTable td:nth-child(8),
+#attachmentTable td:nth-child(9) {
+  text-align: left;
+}
+
+/* 附件选择列左对齐 */
+#attachmentTable .barrelSel {
+  margin: 0;
+  display: inline-block;
+  width: 160px; 
+  min-width: 160px;
+  max-width: 160px;
+}
+#attachmentTable .muzzleSel {
+  margin: 0;
+  display: inline-block;
+  width: 130px; 
+  min-width: 130px;
+  max-width: 130px;
+}
+
+#attachmentTable .bulletSel {
+  margin: 0;
+  display: inline-block;
+  width: 70px; 
+  min-width: 70px;
+  max-width: 70px;
+}

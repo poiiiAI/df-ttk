@@ -1,0 +1,17 @@
+{
+  "name": "ttk",
+  "version": "1.0.0",
+  "description": "三角洲行动TTK（Time To Kill）计算器",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "clean": "rimraf dist",
+    "deploy": "npm run build && echo 'Build completed! Ready for deployment to GitHub Pages.'"
+  },
+  "keywords": ["三角洲行动", "ttk计算器", "ttk", "delta-force", "weapon-calculator", "game-tools"],
+  "author": "B站@中毒的AI",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.8",
+    "rimraf": "^5.0.0"
+  }
+}
