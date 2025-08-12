@@ -47,7 +47,7 @@ export class TTKChart {
       data: {
         labels: [], 
         datasets: [
-          { label: '无空枪击倒时间', backgroundColor: CHART_COLORS.NO_MISS_FIRE, data: [] },
+          { label: '无空枪射击延迟', backgroundColor: CHART_COLORS.NO_MISS_FIRE, data: [] },
           { label: '平均空枪延迟', backgroundColor: CHART_COLORS.EMPTY_DELAY, data: [] },
           { label: '飞行延迟', backgroundColor: CHART_COLORS.FLIGHT_DELAY, data: [] },
           { label: '扳机延迟', backgroundColor: CHART_COLORS.TRIGGER_DELAY, data: [] }

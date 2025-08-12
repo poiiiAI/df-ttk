@@ -31,6 +31,7 @@ async function build() {
       fs.mkdirSync('dist/assets', { recursive: true });
     }
     fs.copyFileSync('assets/bili.png', 'dist/assets/bili.png');
+    fs.copyFileSync('assets/title.png', 'dist/assets/title.png');
     
     console.log('Build completed! Files generated in dist/ directory.');
 
