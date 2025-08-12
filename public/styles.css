@@ -3,6 +3,92 @@ body {
   margin: 20px;
 }
 
+/* 版本信息样式 */
+.version-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-align: right;
+  font-size: 0.75rem;
+  color: #666;
+  line-height: 1.2;
+}
+
+.version-info .update-date {
+  display: block;
+  color: #666;
+}
+
+.version-info .date-label {
+  color: #666;
+}
+
+.version-info .date-value {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.version-info .author {
+  display: block;
+  margin-top: 4px;
+}
+
+/* 作者链接样式 */
+.version-info .author a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.version-info .author a:hover {
+  color: #4caf50;
+  text-decoration: underline;
+}
+
+.version-info .author-icon {
+  font-size: 0.8rem;
+}
+
+/* 作者名字样式 */
+.version-info .author-name {
+  color: #ff69b4;
+  font-weight: bold;
+}
+
+/* 社交媒体链接样式 */
+.version-info .social-links {
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.version-info .social-link {
+  color: #999;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.version-info .social-link:hover {
+  color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.1);
+  transform: scale(1.1);
+}
+
+.version-info .social-icon {
+  font-size: 0.9rem;
+}
+
+/* 为body添加相对定位，让绝对定位的版本信息能正确定位 */
+body {
+  position: relative;
+}
+
 .control-group {
   display: flex;
   align-items: center;

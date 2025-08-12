@@ -71,6 +71,10 @@ export class DOMController {
     this.viewRenderer.renderAttachmentTable(weapons, muzzles, () => {
       this.updateWeaponStats();
     });
+    
+    setTimeout(() => {
+      this.updateWeaponStats();
+    }, 0);
   }
 
   /**
