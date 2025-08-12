@@ -25,6 +25,13 @@ async function build() {
 
     fs.copyFileSync('public/index.html', 'dist/index.html');
     fs.copyFileSync('public/styles.css', 'dist/styles.css');
+    
+    // 复制assets文件夹
+    if (!fs.existsSync('dist/assets')) {
+      fs.mkdirSync('dist/assets', { recursive: true });
+    }
+    fs.copyFileSync('assets/bili.png', 'dist/assets/bili.png');
+    
     console.log('Build completed! Files generated in dist/ directory.');
 
   } catch (error) {

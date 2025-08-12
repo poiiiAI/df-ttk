@@ -49,7 +49,16 @@ body {
 }
 
 .version-info .author-icon {
-  font-size: 0.8rem;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  object-fit: contain;
+  border-radius: 2px;
+  transition: transform 0.2s ease;
+}
+
+.version-info .author a:hover .author-icon {
+  transform: scale(1.1);
 }
 
 /* 作者名字样式 */
