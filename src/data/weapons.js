@@ -526,7 +526,7 @@ export const weapons = [
     },
     {
       name: 'M250',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 630,
@@ -548,7 +548,7 @@ export const weapons = [
     },
     {
       name: 'PKM',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 630,
@@ -642,7 +642,7 @@ export const weapons = [
     },
     {
       name: 'M14',
-      type: '射手步枪',
+      type: '精确射手步枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.8, 0.7, 0.7, 0.7],
       velocity: 575,
@@ -714,7 +714,7 @@ export const weapons = [
     },
     {
       name: 'QJB201高导',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
@@ -736,7 +736,7 @@ export const weapons = [
     },
     {
       name: 'QJB201',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
@@ -758,7 +758,7 @@ export const weapons = [
     },
     {
       name: 'QJB201稳固',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [54, 94.5, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
@@ -780,7 +780,7 @@ export const weapons = [
     },
     {
       name: 'M249',
-      type: '机枪',
+      type: '轻机枪',
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
