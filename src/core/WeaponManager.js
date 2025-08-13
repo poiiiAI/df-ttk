@@ -9,9 +9,115 @@ export class WeaponManager {
   constructor() {
     this.weapons = weapons;
     this.muzzles = muzzles;
+    this.clonedWeapons = []; // 新增：副本武器数组
+    this.maxClones = 5; // 新增：最大副本数量
+  }
+
+  /**
+   * 添加武器副本
+   * @param {number} originalIndex - 原始武器索引
+   * @param {Object} attachmentConfig - 当前附件配置
+   * @param {Object} currentState - 当前武器状态（已应用附件）
+   * @returns {boolean} 是否添加成功
+   */
+  addClone(originalIndex, attachmentConfig, currentState) {
+    if (this.clonedWeapons.length >= this.maxClones) {
+      return false;
+    }
+
+    const originalWeapon = this.weapons[originalIndex];
+    const cloneNumber = this.getNextCloneNumber(originalIndex);
+    
+    // 只保存原始基础属性，不保存已计算状态
+    const clonedWeapon = {
+      ...originalWeapon,        // 原始基础属性
+      name: `${originalWeapon.name} [副本${cloneNumber}]`,
+      isClone: true,
+      originalIndex: originalIndex,
+      cloneNumber: cloneNumber,
+      attachmentConfig: { ...attachmentConfig }
+    };
+
+    this.clonedWeapons.push(clonedWeapon);
+    return true;
+  }
+
+  /**
+   * 删除武器副本
+   * @param {number} cloneIndex - 副本在clonedWeapons数组中的索引
+   */
+  removeClone(cloneIndex) {
+    if (cloneIndex >= 0 && cloneIndex < this.clonedWeapons.length) {
+      // 删除副本
+      this.clonedWeapons.splice(cloneIndex, 1);
+      // 重新编号副本
+      this.renumberClones();
+    }
+  }
+
+  /**
+   * 获取下一个副本编号
+   * @param {number} originalIndex - 原始武器索引
+   * @returns {number} 下一个副本编号
+   */
+  getNextCloneNumber(originalIndex) {
+    // 获取下一个副本编号
+    const existingClones = this.clonedWeapons.filter(
+      clone => clone.originalIndex === originalIndex
+    );
+    return existingClones.length + 1;
+  }
+
+  /**
+   * 重新编号副本
+   */
+  renumberClones() {
+    const cloneGroups = {};
+    // 重新编号副本
+    // 按原始武器分组
+    this.clonedWeapons.forEach(clone => {
+      if (!cloneGroups[clone.originalIndex]) {
+        cloneGroups[clone.originalIndex] = [];
+      }
+      cloneGroups[clone.originalIndex].push(clone);
+    });
+
+    // 重新编号
+    Object.values(cloneGroups).forEach(clones => {
+      clones.forEach((clone, index) => {
+        clone.cloneNumber = index + 1;
+        clone.name = `${this.weapons[clone.originalIndex].name} [副本${clone.cloneNumber}]`;
+      });
+    });
+  }
+
+  /**
+   * 获取所有武器（原始+副本）
+   * @returns {Array} 所有武器数组
+   */
+  getAllWeapons() {
+    return [...this.weapons, ...this.clonedWeapons];
+  }
+
+  /**
+   * 获取副本武器
+   * @returns {Array} 副本武器数组
+   */
+  getClonedWeapons() {
+    // 获取副本武器
+    return this.clonedWeapons;
+  }
+
+  /**
+   * 检查是否可以添加更多副本
+   * @returns {boolean} 是否可以添加
+   */
+  canAddClone() {
+    return this.clonedWeapons.length < this.maxClones;
   }
 
   readAttachmentsWithBullet(barrelValues, muzzleValues, hitRateValues, bulletTypes) {
+    // 只处理原始武器的附件配置
     return this.weapons.map((w, i) => {
       // 添加安全检查，防止数组越界或undefined值
       const barrelValue = barrelValues[i] || '';
@@ -30,7 +136,11 @@ export class WeaponManager {
   }
 
   applyAttachments(attachments, params) {
-    return this.weapons.map((w, idx) => {
+    // === applyAttachments 开始 ===
+    // 当前 clonedWeapons 数量和内容
+    
+    // 处理原始武器
+    const armedOriginalWeapons = this.weapons.map((w, idx) => {
       const { barrelIndex, muzzleIndex, hitRate } = attachments[idx];
       
       const barrel = barrelIndex > 0 ? w.barrels[barrelIndex - 1] : null;
@@ -63,6 +173,54 @@ export class WeaponManager {
         hitRate: hitRate != null ? hitRate : w.hitRate
       };
     });
+  
+    // 处理副本武器（使用保存的配置快照）
+    const armedClonedWeapons = this.clonedWeapons.map(clone => {   
+      const { barrelIndex, muzzleIndex, hitRate } = clone.attachmentConfig;
+      // 解析的附件配置
+      
+      const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
+      const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
+      
+      let rangeMult = 1.0;
+      if (barrel) {
+        rangeMult *= barrel.rangeMult;
+      }
+      if (muzzle) {
+        rangeMult *= (1 + muzzle.mult);
+      }
+      
+      let velocityMult = rangeMult;
+      if (params.muzzlePrecisionEnable && barrel) {
+        velocityMult *= MUZZLE_PRECISION_BONUS;
+      }
+      
+      let rofMult = barrel ? barrel.rofMult : 1.0;
+      let damageBonus = barrel ? barrel.damageBonus : 0;
+      let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
+      
+      // 使用原始基础属性进行计算
+      const result = {
+        ...clone,
+        velocity: clone.velocity * velocityMult,
+        ranges: clone.ranges.map(r => r * rangeMult),
+        rof: clone.rof * rofMult,
+        flesh: clone.flesh + damageBonus,
+        armor: clone.armor + armorDamageBonus,
+        hitRate: hitRate != null ? hitRate : clone.hitRate
+      };
+      
+      // 副本武器处理结果
+      return result;
+    });
+    
+    // armedClonedWeapons 和长度
+
+    // 返回合并后的武器数组
+    const finalResult = [...armedOriginalWeapons, ...armedClonedWeapons];
+    // 最终合并结果和长度
+    
+    return finalResult;
   }
 
   /**
@@ -81,8 +239,6 @@ export class WeaponManager {
     return this.muzzles;
   }
 
-
-
   /**
    * 验证武器命中率是否在有效范围内
    * @param {Array} attachments - 武器附件配置数组
@@ -97,5 +253,47 @@ export class WeaponManager {
       }
     }
     return true;
+  }
+
+  /**
+   * 计算副本武器的显示数据（用于详细列表显示）
+   * @param {Object} clone - 副本武器对象
+   * @param {Object} params - 游戏参数（包含 muzzlePrecisionEnable）
+   * @returns {Object} 计算后的显示数据
+   */
+  calculateCloneDisplayData(clone, params = {}) {
+    const { barrelIndex, muzzleIndex, hitRate } = clone.attachmentConfig;
+    
+    const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
+    const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
+    
+    let rangeMult = 1.0;
+    if (barrel) {
+      rangeMult *= barrel.rangeMult;
+    }
+    if (muzzle) {
+      rangeMult *= (1 + muzzle.mult);
+    }
+    
+    let velocityMult = rangeMult;
+    if (params.muzzlePrecisionEnable && barrel) {
+      velocityMult *= MUZZLE_PRECISION_BONUS;
+    }
+    
+    let rofMult = barrel ? barrel.rofMult : 1.0;
+    let damageBonus = barrel ? barrel.damageBonus : 0;
+    let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
+    
+    // 计算并四舍五入到整数
+    const calculatedData = {
+      velocity: Math.round(clone.velocity * velocityMult),
+      ranges: clone.ranges.map(r => Math.round(r * rangeMult)),
+      rof: Math.round(clone.rof * rofMult * 100) / 100, 
+      flesh: Math.round(clone.flesh + damageBonus),
+      armor: Math.round(clone.armor + armorDamageBonus),
+      hitRate: hitRate != null ? hitRate : clone.hitRate
+    };
+        
+    return calculatedData;
   }
 }

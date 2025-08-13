@@ -40,8 +40,6 @@ export class EventHandler {
         }
       });
     }
-
-    console.log('事件处理器绑定完成');
   }
 
   /**
@@ -60,7 +58,6 @@ export class EventHandler {
     }
 
     this.handlers.clear();
-    console.log('事件处理器解绑完成');
   }
 
   /**

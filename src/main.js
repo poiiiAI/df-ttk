@@ -20,10 +20,9 @@ class AppController {
    */
   initialize() {
     try {
-      // 初始化各个模块
-      this.domController = new DOMController();
-      this.chartManager = new ChartManager();
       this.weaponManager = new WeaponManager();
+      this.domController = new DOMController(this.weaponManager);
+      this.chartManager = new ChartManager();
       this.eventHandler = new EventHandler();
 
       // 初始化 UI
@@ -35,7 +34,7 @@ class AppController {
         () => this.handleDistanceChart()
       );
 
-      console.log('应用初始化完成');
+      // 应用初始化完成
     } catch (error) {
       console.error('应用初始化失败:', error);
       this.domController.showError('应用初始化失败: ' + error.message);
@@ -94,8 +93,32 @@ class AppController {
     validateWeaponHitRates(attachmentConfigs, weapons);
     
     const armed = this.weaponManager.applyAttachments(attachmentConfigs, params);
+    // 原始附件配置和所有武器信息
+    // 4. 构建完整的附件配置数组（包含副本武器）
+    const allAttachments = this.buildCompleteAttachments(armed, attachmentConfigs);
 
-    return { params, armed, attachments: attachmentConfigs };
+    return { params, armed, attachments: allAttachments };
+  }
+
+  /**
+   * 构建完整的附件配置数组（包含副本武器）
+   * @param {Array} allWeapons - 所有武器数组
+   * @param {Array} originalAttachments - 原始武器附件配置
+   * @returns {Array} 完整的附件配置数组
+   */
+  buildCompleteAttachments(allWeapons, originalAttachments) {
+
+    
+    const allAttachments = [...originalAttachments];
+    
+    // 为副本武器添加附件配置
+    allWeapons.slice(originalAttachments.length).forEach((clone, index) => {
+      // 添加副本武器的附件配置
+      allAttachments.push(clone.attachmentConfig);
+    });
+    
+    // 最终附件配置
+    return allAttachments;
   }
 
   /**
