@@ -17,7 +17,7 @@ export const weapons = [
       flesh: 36,
       armor: 48,
       rof: 747,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'SR-3M铸钢战术枪管', 
@@ -39,7 +39,7 @@ export const weapons = [
       flesh: 36,
       armor: 35,
       rof: 700,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '勇士海狸枪管', 
@@ -61,7 +61,7 @@ export const weapons = [
       flesh: 36,
       armor: 33,
       rof: 848,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式渗透一体消音枪管', 
@@ -90,7 +90,7 @@ export const weapons = [
       flesh: 36,
       armor: 33,
       rof: 763,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式渗透一体消音枪管', 
@@ -119,7 +119,7 @@ export const weapons = [
       flesh: 36,
       armor: 33,
       rof: 694,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式渗透一体消音枪管', 
@@ -148,7 +148,7 @@ export const weapons = [
       flesh: 32,
       armor: 35,
       rof: 898,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '重攻长枪管', 
@@ -170,7 +170,7 @@ export const weapons = [
       flesh: 32,
       armor: 35,
       rof: 659,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '野牛刀锋超长枪管', 
@@ -192,7 +192,7 @@ export const weapons = [
       flesh: 32,
       armor: 28,
       rof: 1091,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '导轨枪管组合', 
@@ -221,7 +221,7 @@ export const weapons = [
       flesh: 32,
       armor: 28,
       rof: 950,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '增强枪管组合', 
@@ -250,7 +250,7 @@ export const weapons = [
       flesh: 30,
       armor: 32,
       rof: 820,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '战术枪管组合', 
@@ -293,7 +293,7 @@ export const weapons = [
       flesh: 28,
       armor: 35,
       rof: 780,
-      triggerDelay: 75,
+      triggerDelay: 67,
       barrels: [
         { 
           name: '军需长枪管', 
@@ -322,7 +322,7 @@ export const weapons = [
       flesh: 35,
       armor: 40,
       rof: 605,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '实用重枪管', 
@@ -358,7 +358,7 @@ export const weapons = [
       flesh: 31,
       armor: 35,
       rof: 880,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '精英重枪管组合', 
@@ -394,7 +394,7 @@ export const weapons = [
       flesh: 29,
       armor: 48,
       rof: 972,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'VSS海啸长枪管组合', 
@@ -416,7 +416,7 @@ export const weapons = [
       flesh: 35,
       armor: 38,
       rof: 759,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式蛟龙战术长枪管', 
@@ -438,7 +438,7 @@ export const weapons = [
       flesh: 35,
       armor: 38,
       rof: 706,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式蛟龙战术长枪管', 
@@ -460,7 +460,7 @@ export const weapons = [
       flesh: 35,
       armor: 38,
       rof: 660,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '新式蛟龙战术长枪管', 
@@ -482,7 +482,7 @@ export const weapons = [
       flesh: 34,
       armor: 35,
       rof: 780,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '特攻一体消音枪管', 
@@ -511,7 +511,7 @@ export const weapons = [
       flesh: 24,
       armor: 31,
       rof: 906,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '骑士重枪管', 
@@ -533,7 +533,7 @@ export const weapons = [
       flesh: 55,
       armor: 53,
       rof: 550,
-      triggerDelay: 116,
+      triggerDelay: 100,
       barrels: [
         { 
           name: '钛金长枪管', 
@@ -555,7 +555,7 @@ export const weapons = [
       flesh: 45,
       armor: 42,
       rof: 669,
-      triggerDelay: 63,
+      triggerDelay: 50,
       barrels: [
         { 
           name: '地平线重枪管', 
@@ -577,7 +577,7 @@ export const weapons = [
       flesh: 40,
       armor: 42,
       rof: 600,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '性能枪管组合', 
@@ -620,7 +620,7 @@ export const weapons = [
       flesh: 40,
       armor: 40,
       rof: 585,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '实用标准枪管', 
@@ -649,7 +649,7 @@ export const weapons = [
       flesh: 39,
       armor: 41,
       rof: 727,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '漫游标准枪管', 
@@ -678,7 +678,7 @@ export const weapons = [
       flesh: 34,
       armor: 36,
       rof: 632,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'G3守卫标准枪管组合', 
@@ -707,7 +707,7 @@ export const weapons = [
       flesh: 34,
       armor: 36,
       rof: 533,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [], 
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 5],
@@ -721,7 +721,7 @@ export const weapons = [
       flesh: 32,
       armor: 38,
       rof: 873,
-      triggerDelay: 71,
+      triggerDelay: 50,
       barrels: [
         { 
           name: '新式重锤战术枪管', 
@@ -743,7 +743,7 @@ export const weapons = [
       flesh: 32,
       armor: 38,
       rof: 785,
-      triggerDelay: 71,
+      triggerDelay: 50,
       barrels: [
         { 
           name: '新式重锤战术枪管', 
@@ -765,7 +765,7 @@ export const weapons = [
       flesh: 32,
       armor: 38,
       rof: 714,
-      triggerDelay: 71,
+      triggerDelay: 50,
       barrels: [
         { 
           name: '新式重锤战术枪管', 
@@ -787,7 +787,7 @@ export const weapons = [
       flesh: 30,
       armor: 38,
       rof: 858,
-      triggerDelay: 63,
+      triggerDelay: 50,
       barrels: [
         { 
           name: '犀牛长枪管', 
@@ -809,7 +809,7 @@ export const weapons = [
       flesh: 29,
       armor: 41,
       rof: 735,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '精英脚架长枪管', 
@@ -831,7 +831,7 @@ export const weapons = [
       flesh: 29,
       armor: 32,
       rof: 800,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'AR特勤一体消音组合', 
@@ -874,7 +874,7 @@ export const weapons = [
       flesh: 27,
       armor: 32,
       rof: 632,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'AR特勤一体消音组合', 
@@ -917,7 +917,7 @@ export const weapons = [
       flesh: 38,
       armor: 40,
       rof: 649,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '实用长枪管组合', 
@@ -953,7 +953,7 @@ export const weapons = [
       flesh: 56,
       armor: 55,
       rof: 500,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '歼灭高精长枪管', 
@@ -975,7 +975,7 @@ export const weapons = [
       flesh: 39,
       armor: 42,
       rof: 533,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: 'G3守卫标准枪管组合', 
@@ -1011,7 +1011,7 @@ export const weapons = [
       flesh: 32,
       armor: 35,
       rof: 679,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '实用集成三倍镜枪管', 
@@ -1047,7 +1047,7 @@ export const weapons = [
       flesh: 30,
       armor: 48,
       rof: 740,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '影舞者消音', 
@@ -1076,7 +1076,7 @@ export const weapons = [
       flesh: 28,
       armor: 42,
       rof: 679,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '战术枪管', 
@@ -1104,7 +1104,7 @@ export const weapons = [
       flesh: 23,
       armor: 16,
       rof: 1172,
-      triggerDelay: 17,
+      triggerDelay: 0,
       barrels: [
         { 
           name: '冲击长枪管', 

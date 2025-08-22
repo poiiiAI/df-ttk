@@ -1,15 +1,13 @@
 const esbuild = require('esbuild');
 const fs = require('fs');
+const path = require('path');
 
-// 构建函数
 async function build() {
   try {
-    // 确保dist目录存在
     if (!fs.existsSync('dist')) {
       fs.mkdirSync('dist');
     }
 
-    // 打包JavaScript为bundle.js
     await esbuild.build({
       entryPoints: ['src/main.js'],
       bundle: true,
@@ -23,18 +21,21 @@ async function build() {
       }
     });
 
+    // 拷贝 public 根文件
     fs.copyFileSync('public/index.html', 'dist/index.html');
     fs.copyFileSync('public/styles.css', 'dist/styles.css');
-    
-    // 复制assets文件夹
-    if (!fs.existsSync('dist/assets')) {
-      fs.mkdirSync('dist/assets', { recursive: true });
-    }
-    fs.copyFileSync('assets/bili.png', 'dist/assets/bili.png');
-    fs.copyFileSync('assets/title.png', 'dist/assets/title.png');
-    
-    console.log('Build completed! Files generated in dist/ directory.');
 
+    // 递归拷贝 assets 到 dist/assets（包含 libs、图片、Version.txt 等）
+    const srcAssets = path.resolve('assets');
+    const dstAssets = path.resolve('dist/assets');
+
+    if (fs.existsSync(dstAssets)) {
+      // 清空已有 dist/assets
+      fs.rmSync(dstAssets, { recursive: true, force: true });
+    }
+    fs.cpSync(srcAssets, dstAssets, { recursive: true });
+
+    console.log('Build completed! Files generated in dist/ directory.');
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);
