@@ -12,6 +12,29 @@ import { validateHitProb, validateWeaponHitRates, validatePageParams } from './u
  */
 class AppController {
   constructor() {
+    // 等待 DOM 完全加载后再初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.waitForLibraries());
+    } else {
+      this.waitForLibraries();
+    }
+  }
+
+  waitForLibraries() {
+    // 检查必要的库是否已加载
+    if (typeof Chart === 'undefined') {
+      console.log('等待 Chart.js 加载...');
+      setTimeout(() => this.waitForLibraries(), 100);
+      return;
+    }
+    
+    if (typeof ChartDataLabels === 'undefined') {
+      console.log('等待 ChartDataLabels 插件加载...');
+      setTimeout(() => this.waitForLibraries(), 100);
+      return;
+    }
+    
+    console.log('所有库已加载完成，开始初始化应用');
     this.initialize();
   }
 
@@ -20,6 +43,7 @@ class AppController {
    */
   initialize() {
     try {
+      console.log('开始初始化应用...');
       this.weaponManager = new WeaponManager();
       this.domController = new DOMController(this.weaponManager);
       this.chartManager = new ChartManager();
@@ -34,7 +58,7 @@ class AppController {
         () => this.handleDistanceChart()
       );
 
-      // 应用初始化完成
+      console.log('应用初始化完成');
     } catch (error) {
       console.error('应用初始化失败:', error);
       this.domController.showError('应用初始化失败: ' + error.message);

@@ -18,10 +18,6 @@ export class TTKChart {
   }
 
   initialize() {
-    if (typeof Chart === 'undefined') {
-      setTimeout(() => this.initialize(), 100);
-      return;
-    }
     this.registerPlugins();
     this.createChart();
   }
