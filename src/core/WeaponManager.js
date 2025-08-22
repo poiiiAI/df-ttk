@@ -147,11 +147,10 @@ export class WeaponManager {
       const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
       
       let rangeMult = 1.0;
-      if (barrel) {
-        rangeMult *= barrel.rangeMult;
-      }
-      if (muzzle) {
-        rangeMult *= (1 + muzzle.mult);
+      {
+        const barrelRange = barrel ? barrel.rangeMult : 1.0;
+        const muzzleAdd = muzzle ? muzzle.mult : 0.0;
+        rangeMult *= (barrelRange + muzzleAdd);
       }
       
       let velocityMult = rangeMult;
@@ -173,21 +172,19 @@ export class WeaponManager {
         hitRate: hitRate != null ? hitRate : w.hitRate
       };
     });
-  
+
     // 处理副本武器（使用保存的配置快照）
     const armedClonedWeapons = this.clonedWeapons.map(clone => {   
       const { barrelIndex, muzzleIndex, hitRate } = clone.attachmentConfig;
-      // 解析的附件配置
       
       const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
       const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
       
       let rangeMult = 1.0;
-      if (barrel) {
-        rangeMult *= barrel.rangeMult;
-      }
-      if (muzzle) {
-        rangeMult *= (1 + muzzle.mult);
+      {
+        const barrelRange = barrel ? barrel.rangeMult : 1.0;
+        const muzzleAdd = muzzle ? muzzle.mult : 0.0;
+        rangeMult *= (barrelRange + muzzleAdd);
       }
       
       let velocityMult = rangeMult;
@@ -199,7 +196,6 @@ export class WeaponManager {
       let damageBonus = barrel ? barrel.damageBonus : 0;
       let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
       
-      // 使用原始基础属性进行计算
       const result = {
         ...clone,
         velocity: clone.velocity * velocityMult,
@@ -210,7 +206,6 @@ export class WeaponManager {
         hitRate: hitRate != null ? hitRate : clone.hitRate
       };
       
-      // 副本武器处理结果
       return result;
     });
     
@@ -268,11 +263,10 @@ export class WeaponManager {
     const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
     
     let rangeMult = 1.0;
-    if (barrel) {
-      rangeMult *= barrel.rangeMult;
-    }
-    if (muzzle) {
-      rangeMult *= (1 + muzzle.mult);
+    {
+      const barrelRange = barrel ? barrel.rangeMult : 1.0;
+      const muzzleAdd = muzzle ? muzzle.mult : 0.0;
+      rangeMult *= (barrelRange + muzzleAdd);
     }
     
     let velocityMult = rangeMult;
@@ -284,7 +278,6 @@ export class WeaponManager {
     let damageBonus = barrel ? barrel.damageBonus : 0;
     let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
     
-    // 计算并四舍五入到整数
     const calculatedData = {
       velocity: Math.round(clone.velocity * velocityMult),
       ranges: clone.ranges.map(r => Math.round(r * rangeMult)),
