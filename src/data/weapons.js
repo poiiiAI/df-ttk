@@ -543,7 +543,7 @@ export const weapons = [
           rofMult: 1.0
         }
       ],
-      mult: { head: 1.9, chest: 1, stomach: 0.7, limbs: 0.4 },
+      mult: { head: 1.6, chest: 1, stomach: 0.7, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 5],
     },
     {
@@ -963,7 +963,7 @@ export const weapons = [
           rofMult: 1.0
         }
       ],
-      mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.45 },
+      mult: { head: 1.6, chest: 1, stomach: 0.9, limbs: 0.45 },
       allowedBullets: [3, 4, 5,'Double'],
     },
     {
