@@ -1,4 +1,4 @@
-import { formatRanges } from '../utils/formatters.js';
+import { formatRanges, formatMultipliers } from '../utils/formatters.js';
 
 /**
  * 视图渲染器
@@ -38,6 +38,7 @@ export class ViewRenderer {
         <td class="currentRanges" data-weapon="${idx}">${formatRanges(w.ranges)}</td>
         <td class="currentFlesh" data-weapon="${idx}">${w.flesh}</td>
         <td class="currentArmor" data-weapon="${idx}">${w.armor}</td>
+        <td class="multipliers">${formatMultipliers(w.mult)}</td>
         <td>${this.createSelectHTML('barrelSel', idx, barrelItems, defaultBarrelIndex + 1)}</td>
         <td>${this.createSelectHTML('muzzleSel', idx, muzzleItems, 0)}</td>
         <td>${this.createSelectHTML('bulletSel', idx, bulletItems, 0)}</td>
@@ -59,6 +60,7 @@ export class ViewRenderer {
         <td class="currentRanges" data-clone="${cloneIdx}">${formatRanges(clone.ranges)}</td>
         <td class="currentFlesh" data-clone="${cloneIdx}">${clone.flesh}</td>
         <td class="currentArmor" data-clone="${cloneIdx}">${clone.armor}</td>
+        <td class="multipliers" data-clone="${cloneIdx}">${formatMultipliers(clone.mult)}</td>
         <td>${clone.attachmentConfig.barrelIndex > 0 ? clone.barrels[clone.attachmentConfig.barrelIndex - 1].name : '无'}</td>
         <td>${clone.attachmentConfig.muzzleIndex > 0 ? muzzles[clone.attachmentConfig.muzzleIndex].name : '无'}</td>
         <td>${clone.attachmentConfig.bulletType || '全局'}</td>
@@ -142,6 +144,9 @@ export class ViewRenderer {
         
         const armorCell = document.querySelector(`.currentArmor[data-clone="${cloneIndex}"]`);
         if (armorCell) armorCell.textContent = weapon.armor;
+
+        const multipliersCell = document.querySelector(`.multipliers[data-clone="${cloneIndex}"]`);
+        if (multipliersCell) multipliersCell.textContent = formatMultipliers(weapon.mult);
       } else {
         // 更新原始武器数据
         const rofCell = document.querySelector(`.currentRof[data-weapon="${idx}"]`);
@@ -158,6 +163,9 @@ export class ViewRenderer {
         
         const armorCell = document.querySelector(`.currentArmor[data-weapon="${idx}"]`);
         if (armorCell) armorCell.textContent = weapon.armor;
+
+        const multipliersCell = document.querySelector(`.multipliers[data-weapon="${idx}"]`);
+        if (multipliersCell) multipliersCell.textContent = formatMultipliers(weapon.mult);
       }
     });
   }

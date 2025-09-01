@@ -235,8 +235,8 @@ button:hover {
 }
 
 /* 枪管和枪口列左对齐 */
-#attachmentTable td:nth-child(8),
-#attachmentTable td:nth-child(9) {
+#attachmentTable td:nth-child(9),
+#attachmentTable td:nth-child(10) {
   text-align: left;
 }
 

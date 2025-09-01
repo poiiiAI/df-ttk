@@ -113,3 +113,13 @@ export function formatChartLabel(label, maxLength = 20) {
 export function formatRange(min, max, separator = ' - ') {
   return `${min}${separator}${max}`;
 }
+
+/**
+ * 格式化部位倍率显示
+ * @param {Object} mult - 部位倍率对象
+ * @returns {string} 格式化后的倍率字符串
+ */
+export function formatMultipliers(mult) {
+  if (!mult) return '';
+  return `${mult.head}/${mult.chest}/${mult.stomach}/${mult.limbs}`;
+}

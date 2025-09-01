@@ -108,7 +108,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      allowedBullets: [1, 2, 3, 4, 'RIP'],
     },
     {
       name: 'QCQ171稳固',
@@ -136,8 +136,8 @@ export const weapons = [
           rofMult: 1.0
         }
       ],
-      mult: { head: 2.1, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
+      allowedBullets: [1, 2, 3, 4, 'RIP'],
     },
     {
       name: 'P90',
@@ -470,7 +470,7 @@ export const weapons = [
           rofMult: 1.0
         }
       ],
-      mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
+      mult: { head: 2.1, chest: 1, stomach: 0.9, limbs: 0.4 },
       allowedBullets: [2, 3, 4, 5],
     },
     {
