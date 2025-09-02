@@ -1,5 +1,6 @@
 import { WeaponManager } from '../core/WeaponManager.js';
 import { ViewRenderer } from './ViewRenderer.js';
+import { formatMultipliers } from '../utils/formatters.js';  // 添加这行导入
 
 /**
  * DOM控制器
@@ -222,6 +223,7 @@ export class DOMController {
       <td class="currentRanges" data-clone="${cloneIndex}">${this.formatRanges(displayData.ranges)}</td>
       <td class="currentFlesh" data-clone="${cloneIndex}">${displayData.flesh}</td>
       <td class="currentArmor" data-clone="${cloneIndex}">${displayData.armor}</td>
+      <td class="multipliers" data-clone="${cloneIndex}">${formatMultipliers(displayData.mult)}</td>
       <td>${attachmentConfig.barrelIndex > 0 ? weapons[weaponIndex].barrels[attachmentConfig.barrelIndex - 1].name : '无'}</td>
       <td>${attachmentConfig.muzzleIndex > 0 ? muzzles[attachmentConfig.muzzleIndex].name : '无'}</td>
       <td>${attachmentConfig.bulletType || '全局'}</td>

@@ -284,7 +284,8 @@ export class WeaponManager {
       rof: Math.round(clone.rof * rofMult * 100) / 100, 
       flesh: Math.round(clone.flesh + damageBonus),
       armor: Math.round(clone.armor + armorDamageBonus),
-      hitRate: hitRate != null ? hitRate : clone.hitRate
+      hitRate: hitRate != null ? hitRate : clone.hitRate,
+      mult: clone.mult  // 添加部位倍率数据
     };
         
     return calculatedData;
