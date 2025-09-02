@@ -1,6 +1,7 @@
 import { WeaponManager } from '../core/WeaponManager.js';
 import { ViewRenderer } from './ViewRenderer.js';
-import { formatMultipliers } from '../utils/formatters.js';  // 添加这行导入
+import { formatMultipliers } from '../utils/formatters.js';
+import { CacheManager } from '../utils/cacheManager.js';
 
 /**
  * DOM控制器
@@ -10,6 +11,90 @@ export class DOMController {
   constructor(weaponManager) { // 接收外部传入的 weaponManager
     this.weaponManager = weaponManager; // 使用外部实例
     this.viewRenderer = new ViewRenderer();
+    this.cacheManager = new CacheManager();
+    
+    // 延迟加载保存的配置，确保DOM元素已完全渲染
+    setTimeout(() => {
+      this.loadSavedConfig();
+    }, 0);
+    
+    // 监听参数变化，自动保存配置
+    this.setupAutoSave();
+  }
+
+  /**
+   * 加载保存的配置
+   */
+  loadSavedConfig() {
+    try {
+      const savedConfig = this.cacheManager.loadConfig();
+      this.applyConfigToPage(savedConfig);
+      console.log('配置加载完成');
+    } catch (error) {
+      console.error('加载配置时出错:', error);
+    }
+  }
+
+  /**
+   * 将配置应用到页面控件
+   * @param {Object} config - 配置对象
+   */
+  applyConfigToPage(config) {
+    // 设置基本参数
+    document.getElementById('bulletLevel').value = config.bulletLevel;
+    document.getElementById('armorLevel').value = config.armorLevel;
+    document.getElementById('armorValue').value = config.armorValue;
+    document.getElementById('helmetLevel').value = config.helmetLevel;
+    document.getElementById('helmetValue').value = config.helmetValue;
+    document.getElementById('distance').value = config.distance;
+    document.getElementById('hitRate').value = config.hitRate;
+    document.getElementById('triggerDelayEnable').checked = config.triggerDelayEnable;
+    document.getElementById('muzzlePrecisionEnable').checked = config.muzzlePrecisionEnable;
+    document.getElementById('globalBarrelType').value = config.globalBarrelType;
+
+    // 设置命中概率
+    const hitKeys = ['head', 'chest', 'stomach', 'limbs'];
+    hitKeys.forEach(key => {
+      const el = document.getElementById('p' + key.charAt(0).toUpperCase() + key.slice(1));
+      el.value = config.hitProb[key];
+    });
+  }
+
+  /**
+   * 设置自动保存功能
+   */
+  setupAutoSave() {
+    // 监听所有参数控件的变化
+    const paramElements = [
+      'bulletLevel', 'armorLevel', 'armorValue', 'helmetLevel', 'helmetValue',
+      'distance', 'hitRate', 'triggerDelayEnable', 'muzzlePrecisionEnable',
+      'globalBarrelType', 'pHead', 'pChest', 'pStomach', 'pLimbs'
+    ];
+
+    paramElements.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        // 监听change事件
+        element.addEventListener('change', () => {
+          this.saveCurrentConfig();
+        });
+        
+        // 对于数字输入框，也监听input事件以实时保存
+        if (element.type === 'number') {
+          element.addEventListener('input', () => {
+            this.saveCurrentConfig();
+          });
+        }
+      }
+    });
+  }
+
+  /**
+   * 保存当前配置
+   */
+  saveCurrentConfig() {
+    const currentConfig = this.readPageParams();
+    this.cacheManager.saveConfig(currentConfig);
   }
 
   /**
