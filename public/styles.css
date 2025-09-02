@@ -163,6 +163,11 @@ fieldset.control-group {
   font-size: 0.9rem;
 }
 
+/* 全局枪管类型选择器样式 */
+#globalBarrelType {
+  min-width: 115px;
+}
+
 /* 6. checkbox 样式调整，让它们更紧凑 */
 .control-group input[type="checkbox"] {
   margin: 0;

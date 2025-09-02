@@ -11,8 +11,9 @@ export class EventHandler {
    * 绑定事件处理器
    * @param {Function} calcHandler - 计算按钮事件处理器
    * @param {Function} distChartHandler - 距离图表按钮事件处理器
+   * @param {Function} globalBarrelChangeHandler - 全局枪管类型变化处理器
    */
-  bindEventHandlers(calcHandler, distChartHandler) {
+  bindEventHandlers(calcHandler, distChartHandler, globalBarrelChangeHandler) {
     // 存储处理器引用
     this.handlers.set('calc', calcHandler);
     this.handlers.set('distChart', distChartHandler);
@@ -37,6 +38,18 @@ export class EventHandler {
           distChartHandler();
         } catch (error) {
           console.error('距离图表按钮事件处理错误:', error);
+        }
+      });
+    }
+
+    // 绑定全局枪管类型变化事件
+    const globalBarrelTypeSelect = document.getElementById('globalBarrelType');
+    if (globalBarrelTypeSelect && globalBarrelChangeHandler) {
+      globalBarrelTypeSelect.addEventListener('change', () => {
+        try {
+          globalBarrelChangeHandler();
+        } catch (error) {
+          console.error('全局枪管类型变化事件处理错误:', error);
         }
       });
     }

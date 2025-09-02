@@ -18,13 +18,20 @@ export class ViewRenderer {
     const tbody = document.querySelector('#attachmentTable tbody');
     tbody.innerHTML = '';
     
+    // 获取全局枪管类型设置
+    const globalBarrelType = document.getElementById('globalBarrelType')?.value || 'longest';
+    
     // 渲染原始武器
     weapons.forEach((w, idx) => {
-      // 默认选 rangeMult 最大的枪管
-      const defaultBarrelIndex = w.barrels.reduce((best, cur, curIdx) => 
-        cur.rangeMult > w.barrels[best].rangeMult ? curIdx : best, 
-        0
-      );
+      // 根据全局设置选择默认枪管
+      let defaultBarrelIndex = 0;
+      if (globalBarrelType === 'longest') {
+        defaultBarrelIndex = w.barrels.reduce((best, cur, curIdx) => 
+          cur.rangeMult > w.barrels[best].rangeMult ? curIdx : best, 
+          0
+        ) + 1; // +1 因为第一个选项是"无"
+      }
+      
       const barrelItems = [{ name: '无', rangeMult: 0 }, ...w.barrels];
       const muzzleItems = muzzles;
       const bulletItems = w.allowedBullets || [];
@@ -39,7 +46,7 @@ export class ViewRenderer {
         <td class="currentFlesh" data-weapon="${idx}">${w.flesh}</td>
         <td class="currentArmor" data-weapon="${idx}">${w.armor}</td>
         <td class="multipliers">${formatMultipliers(w.mult)}</td>
-        <td>${this.createSelectHTML('barrelSel', idx, barrelItems, defaultBarrelIndex + 1)}</td>
+        <td>${this.createSelectHTML('barrelSel', idx, barrelItems, defaultBarrelIndex)}</td>
         <td>${this.createSelectHTML('muzzleSel', idx, muzzleItems, 0)}</td>
         <td>${this.createSelectHTML('bulletSel', idx, bulletItems, 0)}</td>
         <td><input type="number" data-weapon="${idx}" class="hitRateInput" min="0" max="1" step="0.01" /></td>

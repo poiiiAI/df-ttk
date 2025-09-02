@@ -27,7 +27,8 @@ export class DOMController {
       hitProb: {},
       hitRate: toNum('hitRate'),
       triggerDelayEnable: document.getElementById('triggerDelayEnable').checked,
-      muzzlePrecisionEnable: document.getElementById('muzzlePrecisionEnable').checked
+      muzzlePrecisionEnable: document.getElementById('muzzlePrecisionEnable').checked,
+      globalBarrelType: document.getElementById('globalBarrelType').value 
     };
     
     // 读取命中概率
@@ -325,5 +326,47 @@ export class DOMController {
    */
   getChartContext(chartId) {
     return document.getElementById(chartId).getContext('2d');
+  }
+
+  /**
+   * 获取全局枪管类型设置
+   * @returns {string} 'none' 或 'longest'
+   */
+  getGlobalBarrelType() {
+    return document.getElementById('globalBarrelType').value;
+  }
+
+  /**
+   * 根据全局设置更新所有武器的枪管选择
+   */
+  updateGlobalBarrelSelections() {
+    const globalBarrelType = this.getGlobalBarrelType();
+    const barrelSelects = document.querySelectorAll('.barrelSel');
+    
+    barrelSelects.forEach((select, index) => {
+      const weapon = this.weaponManager.getWeapons()[index];
+      if (!weapon) return;
+      
+      if (globalBarrelType === 'none') {
+        // 选择"无"
+        select.value = '无|-1';
+      } else if (globalBarrelType === 'longest') {
+        // 检查武器是否有枪管
+        if (weapon.barrels && weapon.barrels.length > 0) {
+          // 选择射程最长的枪管
+          const longestBarrelIndex = weapon.barrels.reduce((best, cur, curIdx) => 
+            cur.rangeMult > weapon.barrels[best].rangeMult ? curIdx : best, 
+            0
+          );
+          select.value = `${weapon.barrels[longestBarrelIndex].name}|${longestBarrelIndex + 1}`;
+        } else {
+          // 没有枪管的武器，选择"无"
+          select.value = '无|-1';
+        }
+      }
+      
+      // 触发change事件，让原有的更新机制工作
+      select.dispatchEvent(new Event('change'));
+    });
   }
 }

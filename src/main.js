@@ -52,10 +52,14 @@ class AppController {
       // 初始化 UI
       this.domController.renderAttachmentTable();
       
+      // 应用全局枪管类型设置
+      this.domController.updateGlobalBarrelSelections();
+      
       // 绑定事件处理器
       this.eventHandler.bindEventHandlers(
         () => this.handleCalculate(),
-        () => this.handleDistanceChart()
+        () => this.handleDistanceChart(),
+        () => this.domController.updateGlobalBarrelSelections()
       );
 
       console.log('应用初始化完成');
