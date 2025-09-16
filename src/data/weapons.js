@@ -540,7 +540,8 @@ export const weapons = [
           rangeMult: 1.3,
           damageBonus: 0,
           armorDamageBonus: 0,
-          rofMult: 1.0
+          rofMult: 1.0,
+          partMultAdd: { stomach: 0.2}
         }
       ],
       mult: { head: 1.6, chest: 1, stomach: 0.7, limbs: 0.4 },
@@ -584,7 +585,8 @@ export const weapons = [
           rangeMult: 1.06,
           damageBonus: 0,
           armorDamageBonus: 0,
-          rofMult: 1.0
+          rofMult: 1.0,
+          partMultAdd: { head: 0.6}
         },
         { 
           name: '超然长枪管组合', 
@@ -828,8 +830,8 @@ export const weapons = [
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
-      flesh: 29,
-      armor: 32,
+      flesh: 31,
+      armor: 33,
       rof: 800,
       triggerDelay: 0,
       barrels: [

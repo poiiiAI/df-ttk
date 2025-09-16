@@ -162,6 +162,16 @@ export class WeaponManager {
       let damageBonus = barrel ? barrel.damageBonus : 0;
       let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
       
+      // 仅加法：部位倍率与扳机延迟
+      const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
+      const newMult = { ...w.mult };
+      if (partAdd) {
+        for (const k in partAdd) newMult[k] = (newMult[k] ?? 1) + partAdd[k];
+      }
+      const baseTrigger = w.triggerDelay || 0;
+      const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
+      const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
+      
       return {
         ...w,
         velocity: w.velocity * velocityMult,
@@ -169,7 +179,9 @@ export class WeaponManager {
         rof: w.rof * rofMult,
         flesh: w.flesh + damageBonus,
         armor: w.armor + armorDamageBonus,
-        hitRate: hitRate != null ? hitRate : w.hitRate
+        hitRate: hitRate != null ? hitRate : w.hitRate,
+        triggerDelay: newTriggerDelay,
+        mult: newMult
       };
     });
 
@@ -196,6 +208,16 @@ export class WeaponManager {
       let damageBonus = barrel ? barrel.damageBonus : 0;
       let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
       
+      // 仅加法：部位倍率与扳机延迟（副本）
+      const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
+      const newMult = { ...clone.mult };
+      if (partAdd) {
+        for (const k in partAdd) newMult[k] = (newMult[k] ?? 1) + partAdd[k];
+      }
+      const baseTrigger = clone.triggerDelay || 0;
+      const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
+      const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
+      
       const result = {
         ...clone,
         velocity: clone.velocity * velocityMult,
@@ -203,7 +225,9 @@ export class WeaponManager {
         rof: clone.rof * rofMult,
         flesh: clone.flesh + damageBonus,
         armor: clone.armor + armorDamageBonus,
-        hitRate: hitRate != null ? hitRate : clone.hitRate
+        hitRate: hitRate != null ? hitRate : clone.hitRate,
+        triggerDelay: newTriggerDelay,
+        mult: newMult
       };
       
       return result;
@@ -278,6 +302,16 @@ export class WeaponManager {
     let damageBonus = barrel ? barrel.damageBonus : 0;
     let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
     
+    // 展示用：仅加法的部位倍率与扳机延迟
+    const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
+    const displayMult = { ...clone.mult };
+    if (partAdd) {
+      for (const k in partAdd) displayMult[k] = (displayMult[k] ?? 1) + partAdd[k];
+    }
+    const baseTrigger = clone.triggerDelay || 0;
+    const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
+    const displayTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
+
     const calculatedData = {
       velocity: Math.round(clone.velocity * velocityMult),
       ranges: clone.ranges.map(r => Math.round(r * rangeMult)),
@@ -285,7 +319,8 @@ export class WeaponManager {
       flesh: Math.round(clone.flesh + damageBonus),
       armor: Math.round(clone.armor + armorDamageBonus),
       hitRate: hitRate != null ? hitRate : clone.hitRate,
-      mult: clone.mult  // 添加部位倍率数据
+      mult: displayMult,
+      triggerDelay: displayTriggerDelay
     };
         
     return calculatedData;

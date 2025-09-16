@@ -121,5 +121,14 @@ export function formatRange(min, max, separator = ' - ') {
  */
 export function formatMultipliers(mult) {
   if (!mult) return '';
-  return `${mult.head}/${mult.chest}/${mult.stomach}/${mult.limbs}`;
+  const round = (v, n = 1) => {
+    if (typeof v !== 'number') return v;
+    const p = Math.pow(10, n);
+    return Math.round((v + Number.EPSILON) * p) / p;
+  };
+  const h = round(mult.head);
+  const c = round(mult.chest);
+  const s = round(mult.stomach);
+  const l = round(mult.limbs);
+  return `${h}/${c}/${s}/${l}`;
 }

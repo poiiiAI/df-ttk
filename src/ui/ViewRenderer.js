@@ -45,7 +45,7 @@ export class ViewRenderer {
         <td class="currentRanges" data-weapon="${idx}">${formatRanges(w.ranges)}</td>
         <td class="currentFlesh" data-weapon="${idx}">${w.flesh}</td>
         <td class="currentArmor" data-weapon="${idx}">${w.armor}</td>
-        <td class="multipliers">${formatMultipliers(w.mult)}</td>
+        <td class="multipliers" data-weapon="${idx}">${formatMultipliers(w.mult)}</td>
         <td>${this.createSelectHTML('barrelSel', idx, barrelItems, defaultBarrelIndex)}</td>
         <td>${this.createSelectHTML('muzzleSel', idx, muzzleItems, 0)}</td>
         <td>${this.createSelectHTML('bulletSel', idx, bulletItems, 0)}</td>
@@ -131,12 +131,15 @@ export class ViewRenderer {
    * @param {Array} allWeapons - 所有武器数据（原始+副本）
    */
   updateWeaponStats(allWeapons) {
+    // 原始武器行数（用于定位副本行索引）
+    const originalCount = document.querySelectorAll('.currentRof[data-weapon]').length;
+
     allWeapons.forEach((weapon, idx) => {
       const isClone = weapon.isClone;
       
       if (isClone) {
         // 更新副本武器数据
-        const cloneIndex = idx - allWeapons.length + weapon.originalIndex;
+        const cloneIndex = idx - originalCount;
         const rofCell = document.querySelector(`.currentRof[data-clone="${cloneIndex}"]`);
         if (rofCell) rofCell.textContent = Math.round(weapon.rof);
         
