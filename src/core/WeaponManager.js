@@ -146,9 +146,11 @@ export class WeaponManager {
       const barrel = barrelIndex > 0 ? w.barrels[barrelIndex - 1] : null;
       const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
       
+      // 射程倍率：若枪管提供 rangeAdd，则忽略枪管倍率，仅应用枪口倍率
       let rangeMult = 1.0;
       {
-        const barrelRange = barrel ? barrel.rangeMult : 1.0;
+        const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+        const barrelRange = hasRangeAdd ? 1.0 : (barrel ? barrel.rangeMult : 1.0);
         const muzzleAdd = muzzle ? muzzle.mult : 0.0;
         rangeMult *= (barrelRange + muzzleAdd);
       }
@@ -172,10 +174,20 @@ export class WeaponManager {
       const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
       const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
       
+      // 按加法或倍率计算射程与初速
+      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
+      const newRanges = hasRangeAdd
+        ? w.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+        : w.ranges.map(r => r * rangeMult);
+      const newVelocity = hasVelocityAdd
+        ? Math.round((w.velocity + barrel.velocityAdd) * velocityMult)
+        : w.velocity * velocityMult;
+
       return {
         ...w,
-        velocity: w.velocity * velocityMult,
-        ranges: w.ranges.map(r => r * rangeMult),
+        velocity: newVelocity,
+        ranges: newRanges,
         rof: w.rof * rofMult,
         flesh: w.flesh + damageBonus,
         armor: w.armor + armorDamageBonus,
@@ -192,9 +204,11 @@ export class WeaponManager {
       const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
       const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
       
+      // 射程倍率：若枪管提供 rangeAdd，则忽略枪管倍率，仅应用枪口倍率
       let rangeMult = 1.0;
       {
-        const barrelRange = barrel ? barrel.rangeMult : 1.0;
+        const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+        const barrelRange = hasRangeAdd ? 1.0 : (barrel ? barrel.rangeMult : 1.0);
         const muzzleAdd = muzzle ? muzzle.mult : 0.0;
         rangeMult *= (barrelRange + muzzleAdd);
       }
@@ -218,10 +232,20 @@ export class WeaponManager {
       const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
       const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
       
+      // 按加法或倍率计算射程与初速（副本）
+      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
+      const newRanges = hasRangeAdd
+        ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+        : clone.ranges.map(r => r * rangeMult);
+      const newVelocity = hasVelocityAdd
+        ? Math.round((clone.velocity + barrel.velocityAdd) * velocityMult)
+        : clone.velocity * velocityMult;
+
       const result = {
         ...clone,
-        velocity: clone.velocity * velocityMult,
-        ranges: clone.ranges.map(r => r * rangeMult),
+        velocity: newVelocity,
+        ranges: newRanges,
         rof: clone.rof * rofMult,
         flesh: clone.flesh + damageBonus,
         armor: clone.armor + armorDamageBonus,
@@ -286,9 +310,11 @@ export class WeaponManager {
     const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
     const muzzle = muzzleIndex > 0 ? this.muzzles[muzzleIndex] : null;
     
+    // 展示：若枪管提供 rangeAdd，则忽略枪管倍率，仅应用枪口倍率
     let rangeMult = 1.0;
     {
-      const barrelRange = barrel ? barrel.rangeMult : 1.0;
+      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      const barrelRange = hasRangeAdd ? 1.0 : (barrel ? barrel.rangeMult : 1.0);
       const muzzleAdd = muzzle ? muzzle.mult : 0.0;
       rangeMult *= (barrelRange + muzzleAdd);
     }
@@ -312,9 +338,18 @@ export class WeaponManager {
     const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
     const displayTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
 
+    const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+    const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
+    const displayRanges = hasRangeAdd
+      ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+      : clone.ranges.map(r => Math.round(r * rangeMult));
+    const displayVelocity = hasVelocityAdd
+      ? Math.round((clone.velocity + barrel.velocityAdd) * velocityMult)
+      : Math.round(clone.velocity * velocityMult);
+
     const calculatedData = {
-      velocity: Math.round(clone.velocity * velocityMult),
-      ranges: clone.ranges.map(r => Math.round(r * rangeMult)),
+      velocity: displayVelocity,
+      ranges: displayRanges,
       rof: Math.round(clone.rof * rofMult * 100) / 100, 
       flesh: Math.round(clone.flesh + damageBonus),
       armor: Math.round(clone.armor + armorDamageBonus),

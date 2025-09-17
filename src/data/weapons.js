@@ -612,6 +612,36 @@ export const weapons = [
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 5],
+    },  
+    {
+      name: 'MK47',
+      type: '步枪',
+      ranges: [30, 45, Infinity, Infinity],
+      decays: [1.0, 0.85, 0.7, 0.7, 0.7],
+      velocity: 525,
+      flesh: 40,
+      armor: 46,
+      rof: 625,
+      triggerDelay: 0,
+      barrels: [
+        { 
+          name: '鏖战枪管', 
+          rangeAdd: -5,
+          damageBonus: 4,
+          armorDamageBonus: 0,
+          rofMult: 1.0
+        },
+        { 
+          name: '余烬枪管', 
+          rangeAdd: 5,
+          velocityAdd: 160,
+          damageBonus: 4,
+          armorDamageBonus: 0,
+          rofMult: 1.0
+        }
+      ],
+      mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
+      allowedBullets: [1, 2, 3, 4, 5],
     },
     {
       name: 'SCAR-H',
@@ -731,6 +761,13 @@ export const weapons = [
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
+        },{ 
+          name: '新式獠牙短枪管', 
+          rangeMult: 1,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0,
+          triggerDelayDelta:-50
         }
       ],
       mult: { head: 2.1, chest: 1, stomach: 0.9, limbs: 0.4 },
@@ -753,6 +790,13 @@ export const weapons = [
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
+        },{ 
+          name: '新式獠牙短枪管', 
+          rangeMult: 1,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0,
+          triggerDelayDelta:-50
         }
       ],
       mult: { head: 2.1, chest: 1, stomach: 0.9, limbs: 0.4 },
@@ -775,6 +819,13 @@ export const weapons = [
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
+        },{ 
+          name: '新式獠牙短枪管', 
+          rangeMult: 1,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0,
+          triggerDelayDelta:-50
         }
       ],
       mult: { head: 2.1, chest: 1, stomach: 0.9, limbs: 0.4 },
