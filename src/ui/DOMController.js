@@ -429,25 +429,44 @@ export class DOMController {
   updateGlobalBarrelSelections() {
     const globalBarrelType = this.getGlobalBarrelType();
     const barrelSelects = document.querySelectorAll('.barrelSel');
+    const muzzleSelects = document.querySelectorAll('.muzzleSel');
     
     barrelSelects.forEach((select, index) => {
       const weapon = this.weaponManager.getWeapons()[index];
       if (!weapon) return;
       
       if (globalBarrelType === 'none') {
-        // 选择"无"
         select.value = '无|-1';
       } else if (globalBarrelType === 'longest') {
-        // 检查武器是否有枪管
         if (weapon.barrels && weapon.barrels.length > 0) {
-          // 选择射程最长的枪管
-          const longestBarrelIndex = weapon.barrels.reduce((best, cur, curIdx) => 
-            cur.rangeMult > weapon.barrels[best].rangeMult ? curIdx : best, 
-            0
-          );
+          const getScore = (w, barrel, muzzleMult) => {
+            if (!barrel) return -Infinity;
+            const hasAdd = typeof barrel.rangeAdd === 'number';
+            const barrelMult = hasAdd ? 1.0 : (typeof barrel.rangeMult === 'number' ? barrel.rangeMult : 1.0);
+            const mult = barrelMult + (typeof muzzleMult === 'number' ? muzzleMult : 0);
+            const ranges = w.ranges.map(r => r === Infinity ? Infinity : (r * mult));
+            const adjusted = hasAdd ? ranges.map(r => r === Infinity ? Infinity : (r + barrel.rangeAdd)) : ranges;
+            const finite = adjusted.filter(Number.isFinite);
+            return finite.length ? Math.max(...finite) : -Infinity;
+          };
+          // 读取当前武器对应的枪口倍率
+          let currentMuzzleMult = 0;
+          const muzzleSel = muzzleSelects[index];
+          if (muzzleSel) {
+            const [, mIdxRaw] = (muzzleSel.value || '').split('|');
+            const mIdx = Number(mIdxRaw);
+            if (!isNaN(mIdx) && mIdx > 0) {
+              const muzzle = this.weaponManager.getMuzzles()[mIdx];
+              currentMuzzleMult = muzzle ? (muzzle.mult || 0) : 0;
+            }
+          }
+          const longestBarrelIndex = weapon.barrels.reduce((best, cur, curIdx) => {
+            const sb = getScore(weapon, weapon.barrels[best], currentMuzzleMult);
+            const sc = getScore(weapon, cur, currentMuzzleMult);
+            return sc > sb ? curIdx : best;
+          }, 0);
           select.value = `${weapon.barrels[longestBarrelIndex].name}|${longestBarrelIndex + 1}`;
         } else {
-          // 没有枪管的武器，选择"无"
           select.value = '无|-1';
         }
       }

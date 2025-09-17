@@ -161,23 +161,9 @@ export class DistanceChart {
    * 使用公式计算TTK
    */
   calculateTTKByFormula(weapon, distance, params, strategy, simulationCache) {
-    const ranges = weapon.ranges;
-    
-    // 找到当前距离所在的射程段
-    let currentRangeIndex = 0;
-    for (let i = 0; i < ranges.length; i++) {
-      if (distance < ranges[i]) {
-        currentRangeIndex = i;
-        break;
-      }
-      currentRangeIndex = i + 1;
-    }
-    
-    if (currentRangeIndex >= ranges.length) {
-      currentRangeIndex = ranges.length - 1;
-    }
-    
-    const startDistance = currentRangeIndex === 0 ? 0 : ranges[currentRangeIndex - 1];
+    // 使用缓存中的关键点，选择不大于当前距离的最近关键点作为段起点
+    const keys = Array.from(simulationCache.keys()).filter(k => k <= distance);
+    const startDistance = keys.length ? Math.max(...keys) : 0;
     const startTTK = simulationCache.get(startDistance);
     
     if (!startTTK) {

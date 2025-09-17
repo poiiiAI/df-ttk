@@ -26,10 +26,21 @@ export class ViewRenderer {
       // 根据全局设置选择默认枪管
       let defaultBarrelIndex = 0;
       if (globalBarrelType === 'longest') {
-        defaultBarrelIndex = w.barrels.reduce((best, cur, curIdx) => 
-          cur.rangeMult > w.barrels[best].rangeMult ? curIdx : best, 
-          0
-        ) + 1; // +1 因为第一个选项是"无"
+        const getScore = (weapon, barrel) => {
+          if (!barrel) return -Infinity;
+          const hasAdd = typeof barrel.rangeAdd === 'number';
+          const mult = hasAdd ? 1.0 : (typeof barrel.rangeMult === 'number' ? barrel.rangeMult : 1.0);
+          const ranges = weapon.ranges.map(r => r === Infinity ? Infinity : (Math.round(r * mult)));
+          const adjusted = hasAdd ? ranges.map(r => r === Infinity ? Infinity : (r + barrel.rangeAdd)) : ranges;
+          const finite = adjusted.filter(Number.isFinite);
+          return finite.length ? Math.max(...finite) : -Infinity;
+        };
+        const bestIdx = w.barrels.reduce((best, cur, curIdx) => {
+          const sb = getScore(w, w.barrels[best]);
+          const sc = getScore(w, cur);
+          return sc > sb ? curIdx : best;
+        }, 0);
+        defaultBarrelIndex = bestIdx + 1; // +1 因为第一个选项是"无"
       }
       
       const barrelItems = [{ name: '无', rangeMult: 0 }, ...w.barrels];
