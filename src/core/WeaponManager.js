@@ -28,6 +28,10 @@ export class WeaponManager {
     const originalWeapon = this.weapons[originalIndex];
     const cloneNumber = this.getNextCloneNumber(originalIndex);
     
+    // 获取当前武器的精校值
+    const slider = document.querySelector(`.velocity-precision-slider[data-weapon="${originalIndex}"]`);
+    const currentPrecision = slider ? parseFloat(slider.value) : 0;
+    
     // 只保存原始基础属性，不保存已计算状态
     const clonedWeapon = {
       ...originalWeapon,        // 原始基础属性
@@ -35,7 +39,10 @@ export class WeaponManager {
       isClone: true,
       originalIndex: originalIndex,
       cloneNumber: cloneNumber,
-      attachmentConfig: { ...attachmentConfig }
+      attachmentConfig: { 
+        ...attachmentConfig,
+        velocityPrecision: currentPrecision
+      }
     };
 
     this.clonedWeapons.push(clonedWeapon);
@@ -100,6 +107,33 @@ export class WeaponManager {
   }
 
   /**
+   * 获取武器的枪口初速精校值
+   * @param {number} weaponIndex - 武器索引
+   * @param {boolean} isClone - 是否为副本
+   * @param {Object} params - 游戏参数
+   * @returns {number} 精校值（-0.09到0.09）
+   */
+  getWeaponVelocityPrecision(weaponIndex, isClone, params) {
+    // 优先使用武器特定的精校值
+    if (isClone) {
+      const clone = this.clonedWeapons[weaponIndex];
+      if (clone && clone.attachmentConfig && clone.attachmentConfig.velocityPrecision !== undefined) {
+        return clone.attachmentConfig.velocityPrecision;
+      }
+    } else {
+      // 从DOM获取原始武器的精校值
+      const slider = document.querySelector(`.velocity-precision-slider[data-weapon="${weaponIndex}"]`);
+      if (slider) {
+        return parseFloat(slider.value);
+      }
+    }
+    
+    // 默认返回0（无精校）
+    return 0;
+  }
+
+
+  /**
    * 获取副本武器
    * @returns {Array} 副本武器数组
    */
@@ -156,9 +190,9 @@ export class WeaponManager {
       }
       
       let velocityMult = rangeMult;
-      if (params.muzzlePrecisionEnable && barrel) {
-        velocityMult *= MUZZLE_PRECISION_BONUS;
-      }
+      // 获取武器特定的精校值（不管是否安装枪管都应用）
+      const precisionValue = this.getWeaponVelocityPrecision(idx, false, params);
+      velocityMult *= (1 + precisionValue);
       
       let rofMult = barrel ? barrel.rofMult : 1.0;
       let damageBonus = barrel ? barrel.damageBonus : 0;
@@ -198,7 +232,7 @@ export class WeaponManager {
     });
 
     // 处理副本武器（使用保存的配置快照）
-    const armedClonedWeapons = this.clonedWeapons.map(clone => {   
+    const armedClonedWeapons = this.clonedWeapons.map((clone, cloneIdx) => {   
       const { barrelIndex, muzzleIndex, hitRate } = clone.attachmentConfig;
       
       const barrel = barrelIndex > 0 ? clone.barrels[barrelIndex - 1] : null;
@@ -214,9 +248,9 @@ export class WeaponManager {
       }
       
       let velocityMult = rangeMult;
-      if (params.muzzlePrecisionEnable && barrel) {
-        velocityMult *= MUZZLE_PRECISION_BONUS;
-      }
+      // 获取武器特定的精校值（不管是否安装枪管都应用）
+      const precisionValue = this.getWeaponVelocityPrecision(cloneIdx, true, params);
+      velocityMult *= (1 + precisionValue);
       
       let rofMult = barrel ? barrel.rofMult : 1.0;
       let damageBonus = barrel ? barrel.damageBonus : 0;

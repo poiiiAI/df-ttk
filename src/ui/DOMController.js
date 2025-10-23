@@ -8,8 +8,8 @@ import { CacheManager } from '../utils/cacheManager.js';
  * 负责DOM操作、数据读取和协调其他组件
  */
 export class DOMController {
-  constructor(weaponManager) { // 接收外部传入的 weaponManager
-    this.weaponManager = weaponManager; // 使用外部实例
+  constructor(weaponManager) {
+    this.weaponManager = weaponManager;
     this.viewRenderer = new ViewRenderer();
     this.cacheManager = new CacheManager();
     
@@ -29,7 +29,6 @@ export class DOMController {
     try {
       const savedConfig = this.cacheManager.loadConfig();
       this.applyConfigToPage(savedConfig);
-      console.log('配置加载完成');
     } catch (error) {
       console.error('加载配置时出错:', error);
     }
@@ -49,7 +48,6 @@ export class DOMController {
     document.getElementById('distance').value = config.distance;
     document.getElementById('hitRate').value = config.hitRate;
     document.getElementById('triggerDelayEnable').checked = config.triggerDelayEnable;
-    document.getElementById('muzzlePrecisionEnable').checked = config.muzzlePrecisionEnable;
     document.getElementById('globalBarrelType').value = config.globalBarrelType;
 
     // 设置命中概率
@@ -58,6 +56,9 @@ export class DOMController {
       const el = document.getElementById('p' + key.charAt(0).toUpperCase() + key.slice(1));
       el.value = config.hitProb[key];
     });
+
+    // 设置枪口初速精校数据
+    this.applyVelocityPrecisionSettings(config.velocityPrecisionSettings);
   }
 
   /**
@@ -67,7 +68,7 @@ export class DOMController {
     // 监听所有参数控件的变化
     const paramElements = [
       'bulletLevel', 'armorLevel', 'armorValue', 'helmetLevel', 'helmetValue',
-      'distance', 'hitRate', 'triggerDelayEnable', 'muzzlePrecisionEnable',
+      'distance', 'hitRate', 'triggerDelayEnable',
       'globalBarrelType', 'pHead', 'pChest', 'pStomach', 'pLimbs'
     ];
 
@@ -87,7 +88,23 @@ export class DOMController {
         }
       }
     });
+
+    // 监听枪口初速精校滑块的变化
+    this.setupVelocityPrecisionAutoSave();
   }
+
+  /**
+   * 设置枪口初速精校滑块的自动保存
+   */
+  setupVelocityPrecisionAutoSave() {
+    // 使用事件委托，监听动态添加的滑块
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('velocity-precision-slider')) {
+        this.saveCurrentConfig();
+      }
+    });
+  }
+
 
   /**
    * 保存当前配置
@@ -113,7 +130,6 @@ export class DOMController {
       hitProb: {},
       hitRate: toNum('hitRate'),
       triggerDelayEnable: document.getElementById('triggerDelayEnable').checked,
-      muzzlePrecisionEnable: document.getElementById('muzzlePrecisionEnable').checked,
       globalBarrelType: document.getElementById('globalBarrelType').value 
     };
     
@@ -124,7 +140,89 @@ export class DOMController {
       params.hitProb[key] = Number(el.value);
     });
     
+    // 读取枪口初速精校设置
+    params.velocityPrecisionSettings = this.getVelocityPrecisionSettings();
+    
     return params;
+  }
+
+  /**
+   * 获取枪口初速精校设置
+   * @returns {Object} 精校设置对象
+   */
+  getVelocityPrecisionSettings() {
+    const settings = {
+      weaponSettings: {}
+    };
+
+    // 读取所有武器的精校值
+    const sliders = document.querySelectorAll('.velocity-precision-slider');
+    
+    sliders.forEach(slider => {
+      const weaponIndex = slider.dataset.weapon;
+      const cloneIndex = slider.dataset.clone;
+      const precisionValue = parseFloat(slider.value);
+      
+      if (weaponIndex !== undefined) {
+        settings.weaponSettings[`weapon_${weaponIndex}`] = precisionValue;
+      } else if (cloneIndex !== undefined) {
+        settings.weaponSettings[`clone_${cloneIndex}`] = precisionValue;
+      }
+    });
+
+    return settings;
+  }
+
+  /**
+   * 应用枪口初速精校设置
+   * @param {Object} settings - 精校设置对象
+   */
+  applyVelocityPrecisionSettings(settings) {
+    // 获取所有滑块
+    const sliders = document.querySelectorAll('.velocity-precision-slider');
+    
+    // 如果有保存的设置，应用保存的设置
+    if (settings && settings.weaponSettings) {
+      Object.keys(settings.weaponSettings).forEach(key => {
+        const precisionValue = settings.weaponSettings[key];
+        let slider = null;
+        
+        if (key.startsWith('weapon_')) {
+          const weaponIndex = key.replace('weapon_', '');
+          slider = document.querySelector(`.velocity-precision-slider[data-weapon="${weaponIndex}"]`);
+        } else if (key.startsWith('clone_')) {
+          const cloneIndex = key.replace('clone_', '');
+          slider = document.querySelector(`.velocity-precision-slider[data-clone="${cloneIndex}"]`);
+        }
+        
+        if (slider) {
+          slider.value = precisionValue;
+          const valueSpan = slider.parentElement.querySelector('.velocity-precision-value');
+          if (valueSpan) {
+            valueSpan.textContent = `${Math.round(precisionValue * 100)}%`;
+          }
+        }
+      });
+    }
+    
+    // 确保所有滑块都有默认值（9%），但不要覆盖已设置的值
+    sliders.forEach(slider => {
+      // 只有在没有设置值或值为0时才设置默认值
+      if (slider.value === '0' || slider.value === '') {
+        slider.value = 0.09;
+        const valueSpan = slider.parentElement.querySelector('.velocity-precision-value');
+        if (valueSpan) {
+          valueSpan.textContent = '9%';
+        }
+      } else {
+        // 如果已经有值，确保显示正确
+        const valueSpan = slider.parentElement.querySelector('.velocity-precision-value');
+        if (valueSpan) {
+          const percentage = Math.round(parseFloat(slider.value) * 100);
+          valueSpan.textContent = `${percentage}%`;
+        }
+      }
+    });
   }
 
   /**
@@ -439,30 +537,18 @@ export class DOMController {
         select.value = '无|-1';
       } else if (globalBarrelType === 'longest') {
         if (weapon.barrels && weapon.barrels.length > 0) {
-          const getScore = (w, barrel, muzzleMult) => {
+          const getScore = (w, barrel) => {
             if (!barrel) return -Infinity;
             const hasAdd = typeof barrel.rangeAdd === 'number';
             const barrelMult = hasAdd ? 1.0 : (typeof barrel.rangeMult === 'number' ? barrel.rangeMult : 1.0);
-            const mult = barrelMult + (typeof muzzleMult === 'number' ? muzzleMult : 0);
-            const ranges = w.ranges.map(r => r === Infinity ? Infinity : (r * mult));
+            const ranges = w.ranges.map(r => r === Infinity ? Infinity : (r * barrelMult));
             const adjusted = hasAdd ? ranges.map(r => r === Infinity ? Infinity : (r + barrel.rangeAdd)) : ranges;
             const finite = adjusted.filter(Number.isFinite);
             return finite.length ? Math.max(...finite) : -Infinity;
           };
-          // 读取当前武器对应的枪口倍率
-          let currentMuzzleMult = 0;
-          const muzzleSel = muzzleSelects[index];
-          if (muzzleSel) {
-            const [, mIdxRaw] = (muzzleSel.value || '').split('|');
-            const mIdx = Number(mIdxRaw);
-            if (!isNaN(mIdx) && mIdx > 0) {
-              const muzzle = this.weaponManager.getMuzzles()[mIdx];
-              currentMuzzleMult = muzzle ? (muzzle.mult || 0) : 0;
-            }
-          }
           const longestBarrelIndex = weapon.barrels.reduce((best, cur, curIdx) => {
-            const sb = getScore(weapon, weapon.barrels[best], currentMuzzleMult);
-            const sc = getScore(weapon, cur, currentMuzzleMult);
+            const sb = getScore(weapon, weapon.barrels[best]);
+            const sc = getScore(weapon, cur);
             return sc > sb ? curIdx : best;
           }, 0);
           select.value = `${weapon.barrels[longestBarrelIndex].name}|${longestBarrelIndex + 1}`;

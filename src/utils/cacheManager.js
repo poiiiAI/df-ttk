@@ -28,8 +28,10 @@ export class CacheManager {
       },
       hitRate: 0.85,
       triggerDelayEnable: true,
-      muzzlePrecisionEnable: true,
-      globalBarrelType: 'longest'
+      globalBarrelType: 'longest',
+      velocityPrecisionSettings: {
+        weaponSettings: {}
+      }
     };
   }
 

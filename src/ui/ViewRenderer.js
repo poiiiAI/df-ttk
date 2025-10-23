@@ -61,6 +61,7 @@ export class ViewRenderer {
         <td>${this.createSelectHTML('muzzleSel', idx, muzzleItems, 0)}</td>
         <td>${this.createSelectHTML('bulletSel', idx, bulletItems, 0)}</td>
         <td><input type="number" data-weapon="${idx}" class="hitRateInput" min="0" max="1" step="0.01" /></td>
+        <td>${this.createVelocityPrecisionSlider(idx, false, 0)}</td>
         <td>${this.createActionButton(idx, 'add', onAddClone)}</td>
       `;
       tbody.appendChild(tr);
@@ -108,6 +109,44 @@ export class ViewRenderer {
     } else {
       return `<button class="remove-clone-btn" data-clone="${index}" title="删除副本">-</button>`;
     }
+  }
+
+  /**
+   * 创建枪口初速精校滑块
+   * @param {number} index - 武器或副本索引
+   * @param {boolean} isClone - 是否为副本
+   * @param {number} defaultValue - 默认值
+   * @returns {string} 滑块HTML
+   */
+  createVelocityPrecisionSlider(index, isClone = false, defaultValue = 0) {
+    const dataAttr = isClone ? `data-clone="${index}"` : `data-weapon="${index}"`;
+    const percentage = Math.round(defaultValue * 100);
+    return `
+      <div class="velocity-precision-container">
+        <input type="range" 
+               class="velocity-precision-slider" 
+               ${dataAttr}
+               min="-0.09" 
+               max="0.09" 
+               step="0.01" 
+               value="${defaultValue}" />
+        <span class="velocity-precision-value">${percentage}%</span>
+      </div>
+    `;
+  }
+
+  /**
+   * 创建枪口初速精校只读显示（用于副本）
+   * @param {number} precisionValue - 精校值
+   * @returns {string} 只读显示HTML
+   */
+  createVelocityPrecisionDisplay(precisionValue = 0) {
+    const percentage = Math.round(precisionValue * 100);
+    return `
+      <div class="velocity-precision-display">
+        <span class="velocity-precision-value">${percentage}%</span>
+      </div>
+    `;
   }
 
   /**
@@ -248,6 +287,20 @@ export class ViewRenderer {
     const bulletSelects = document.querySelectorAll('.bulletSel');
     bulletSelects.forEach(select => {
       select.addEventListener('change', () => {
+        onAttachmentChange();
+      });
+    });
+    
+    // 监听枪口初速精校滑块变化
+    const velocitySliders = document.querySelectorAll('.velocity-precision-slider');
+    velocitySliders.forEach(slider => {
+      slider.addEventListener('input', (e) => {
+        // 更新显示值
+        const valueSpan = e.target.parentElement.querySelector('.velocity-precision-value');
+        const percentage = Math.round(e.target.value * 100);
+        valueSpan.textContent = `${percentage}%`;
+        
+        // 触发重新计算
         onAttachmentChange();
       });
     });
