@@ -352,7 +352,7 @@ export const weapons = [
     {
       name: 'K416',
       type: '步枪',
-      ranges: [27, 53, Infinity, Infinity],
+      ranges: [27, 54, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 575,
       flesh: 31,
@@ -388,8 +388,8 @@ export const weapons = [
     {
       name: 'AS Val',
       type: '步枪',
-      ranges: [27, 53, Infinity, Infinity],
-      decays: [1.0, 0.85, 0.7, 0.7, 0.7],
+      ranges: [27, 54, Infinity, Infinity],
+      decays: [1.0, 0.9, 0.8, 0.8, 0.8],
       velocity: 330,
       flesh: 29,
       armor: 48,
@@ -544,7 +544,7 @@ export const weapons = [
           partMultAdd: { stomach: 0.2}
         }
       ],
-      mult: { head: 1.6, chest: 1, stomach: 0.7, limbs: 0.4 },
+      mult: { head: 1.82, chest: 1, stomach: 0.7, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 5],
     },
     {
@@ -619,7 +619,7 @@ export const weapons = [
       ranges: [30, 45, Infinity, Infinity],
       decays: [1.0, 0.85, 0.7, 0.7, 0.7],
       velocity: 525,
-      flesh: 40,
+      flesh: 42,
       armor: 46,
       rof: 625,
       triggerDelay: 0,
@@ -628,14 +628,14 @@ export const weapons = [
           name: '鏖战枪管', 
           rangeAdd: -5,
           damageBonus: 4,
-          armorDamageBonus: 0,
+          armorDamageBonus: 1,
           rofMult: 1.0
         },
         { 
           name: '余烬枪管', 
           rangeAdd: 5,
-          velocityAdd: 160,
-          damageBonus: 4,
+          velocityAdd: 175,
+          damageBonus: 3,
           armorDamageBonus: 0,
           rofMult: 1.0
         }
@@ -715,6 +715,13 @@ export const weapons = [
         { 
           name: 'G3守卫标准枪管组合', 
           rangeMult: 1.18,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0
+        },
+        { 
+          name: 'G3加强长枪管组合', 
+          rangeMult: 1.3,
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
@@ -859,8 +866,8 @@ export const weapons = [
       ranges: [40, 70, Infinity, Infinity],
       decays: [1.0, 0.9, 0.75, 0.75, 0.75],
       velocity: 575,
-      flesh: 29,
-      armor: 41,
+      flesh: 30,
+      armor: 42,
       rof: 735,
       triggerDelay: 0,
       barrels: [
@@ -908,7 +915,7 @@ export const weapons = [
           rofMult: 1.0
         },
         { 
-          name: 'AR战壕标准枪管组合', 
+          name: 'AR加百列长枪管组合', 
           rangeMult: 1.3,
           damageBonus: 0,
           armorDamageBonus: 0,
@@ -951,7 +958,7 @@ export const weapons = [
           rofMult: 1.0
         },
         { 
-          name: 'AR战壕标准枪管组合', 
+          name: 'AR加百列长枪管组合', 
           rangeMult: 1.3,
           damageBonus: 0,
           armorDamageBonus: 0,
