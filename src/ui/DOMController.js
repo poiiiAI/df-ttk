@@ -46,6 +46,7 @@ export class DOMController {
     document.getElementById('helmetLevel').value = config.helmetLevel;
     document.getElementById('helmetValue').value = config.helmetValue;
     document.getElementById('distance').value = config.distance;
+    document.getElementById('healthValue').value = config.healthValue || 100;
     document.getElementById('hitRate').value = config.hitRate;
     document.getElementById('triggerDelayEnable').checked = config.triggerDelayEnable;
     document.getElementById('globalBarrelType').value = config.globalBarrelType;
@@ -68,7 +69,7 @@ export class DOMController {
     // 监听所有参数控件的变化
     const paramElements = [
       'bulletLevel', 'armorLevel', 'armorValue', 'helmetLevel', 'helmetValue',
-      'distance', 'hitRate', 'triggerDelayEnable',
+      'distance', 'healthValue', 'hitRate', 'triggerDelayEnable',
       'globalBarrelType', 'pHead', 'pChest', 'pStomach', 'pLimbs'
     ];
 
@@ -127,6 +128,7 @@ export class DOMController {
       helmetLevel: toNum('helmetLevel'),
       helmetValue: toNum('helmetValue'),
       distance: toNum('distance'),
+      healthValue: toNum('healthValue'),
       hitProb: {},
       hitRate: toNum('hitRate'),
       triggerDelayEnable: document.getElementById('triggerDelayEnable').checked,

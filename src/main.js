@@ -5,6 +5,7 @@ import { ChartManager } from './ui/ChartManager.js';
 import { DOMController } from './ui/DOMController.js';
 import { EventHandler } from './ui/EventHandler.js';
 import { validateHitProb, validateWeaponHitRates, validatePageParams } from './utils/validators.js';
+import { resetSeed } from './utils/rng.js';
 
 /**
  * 应用主控制器
@@ -75,6 +76,8 @@ class AppController {
   handleCalculate() {
     try {
       const { params, armed, attachments } = this.prepareWeaponData();
+      // 重置随机种子，确保每次生成柱状图时结果一致
+      resetSeed();
       const results = SimulationEngine.calculateWeaponsTTK(armed, attachments, params);
       this.chartManager.updateTtkChart(results, params);
     } catch (error) {

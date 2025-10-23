@@ -121,7 +121,7 @@ export function formatRange(min, max, separator = ' - ') {
  */
 export function formatMultipliers(mult) {
   if (!mult) return '';
-  const round = (v, n = 1) => {
+  const round = (v, n = 2) => {
     if (typeof v !== 'number') return v;
     const p = Math.pow(10, n);
     return Math.round((v + Number.EPSILON) * p) / p;

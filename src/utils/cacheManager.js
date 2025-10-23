@@ -20,6 +20,7 @@ export class CacheManager {
       helmetLevel: 4,
       helmetValue: 35,
       distance: 30,
+      healthValue: 100,
       hitProb: {
         head: 0.18,
         chest: 0.3,

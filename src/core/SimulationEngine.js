@@ -2,6 +2,7 @@ import { bulletData } from '../data/bullets.js';
 import { SIMULATION_CONFIG } from '../constants/config.js';
 import { DistanceDecayCalculator } from './CombatUtils.js';
 import { BulletStrategyFactory } from './BulletStrategy.js';
+import { seededRandom } from '../utils/rng.js';
 
 /**
  * 模拟引擎
@@ -15,7 +16,7 @@ export class SimulationEngine {
    * @returns {Object} 包含 time, shots, hits 的结果对象
    */
   static simulateOneTTK(weapon, params, bulletStrategy) {
-    let health = 100;
+    let health = params.healthValue || 100;
     let armorState = {
       armorVal: params.armorValue,
       helmetVal: params.helmetValue
@@ -32,7 +33,7 @@ export class SimulationEngine {
     
     while (health > 0) {
       shots++;
-      if (Math.random() > hitRate) {
+      if (seededRandom() > hitRate) {
         // 未命中：只消耗一次间隔，继续下一发
         continue;
       }

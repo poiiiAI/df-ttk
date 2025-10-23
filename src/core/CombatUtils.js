@@ -68,6 +68,8 @@ export class ArmorDamageCalculator {
   }
 }
 
+import { seededRandom } from '../utils/rng.js';
+
 /**
  * 命中部位选择器
  */
@@ -78,7 +80,7 @@ export class HitPartSelector {
    * @returns {string} 命中部位
    */
   static select(hitProb) {
-    const rnd = Math.random();
+    const rnd = seededRandom();
     let sum = 0;
     for (let key of ['head', 'chest', 'stomach', 'limbs']) {
       sum += hitProb[key];

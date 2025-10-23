@@ -6,6 +6,7 @@ import {
 import { SimulationEngine } from '../../core/SimulationEngine.js';
 import { BulletStrategyFactory } from '../../core/BulletStrategy.js';
 import { formatTime } from '../../utils/formatters.js';
+import { resetSeed } from '../../utils/rng.js';
 
 /**
  * 垂直线插件
@@ -46,6 +47,9 @@ export class DistanceChart {
    * 更新距离图表
    */
   update(armed, attachments, params) {
+    // 重置随机种子，确保距离图表的一致性
+    resetSeed();
+    
     // 生成1米精度的距离点 [0, 1, 2, ..., 100]
     const distances = Array.from({ length: 101 }, (_, i) => i);
     
