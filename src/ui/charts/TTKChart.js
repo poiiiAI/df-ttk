@@ -176,7 +176,8 @@ export class TTKChart {
     }
     
     // 按空枪比例分配间隔时间
-    const missRatio = avgMisses / totalIntervalCount;
+    // 限制missRatio在[0, 1]范围内，防止avgMisses超过totalIntervalCount时产生负值
+    const missRatio = Math.min(1, Math.max(0, avgMisses / totalIntervalCount));
     const emptyDelay = allIntervalTime * missRatio;
     const noMissFireDelay = allIntervalTime * (1 - missRatio);
     
@@ -195,7 +196,8 @@ export class TTKChart {
     }
     
     // 按空枪比例分配间隔时间
-    const missRatio = avgMisses / totalIntervalCount;
+    // 限制missRatio在[0, 1]范围内，防止avgMisses超过totalIntervalCount时产生负值
+    const missRatio = Math.min(1, Math.max(0, avgMisses / totalIntervalCount));
     const emptyDelay = allIntervalTime * missRatio;
     const noMissFireDelay = allIntervalTime * (1 - missRatio);
     
