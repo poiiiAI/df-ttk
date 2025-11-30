@@ -51,6 +51,42 @@ export const weapons = [
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 'RIP'],
+    }, 
+    {
+      name: 'MK4',
+      type: '冲锋枪',
+      ranges: [20, 30, 40, Infinity],
+      decays: [1.0, 0.9, 0.8, 0.7, 0.7],
+      velocity: 475,
+      flesh: 34,
+      armor: 30,
+      rof: 793,
+      triggerDelay: 0,
+      burstCount: 3,
+      burstInternalROF: 1200,
+      burstInterval: 0.127,
+      fireMode: 'burst',
+      barrels: [
+        { 
+          name: '深空镀铬枪管', 
+          rangeAdd:5,
+          velocityAdd: 100,
+          damageBonus: -2,
+          armorDamageBonus: -3,
+          rofMult: 1.1,
+          partMultAdd: { head: -0.1, stomach: -0.1, limbs: -0.1},
+          fireMode: 'auto'
+        },
+        { 
+          name: '击剑手枪管', 
+          rangeMult: 1.3,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0
+        }
+      ],
+      mult: { head: 2, chest: 1, stomach: 1, limbs: 0.5 },
+      allowedBullets: [3, 4, 5],
     },
     {
       name: 'QCQ171高导',
@@ -210,7 +246,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 'RIP45'],
+      allowedBullets: [1, 2, 3, 4, 'RIP45', 'ACP SUPER'],
     },
     {
       name: 'MP7',
@@ -232,6 +268,13 @@ export const weapons = [
         },
         { 
           name: '蜂刺长枪管组合', 
+          rangeMult: 1.3,
+          damageBonus: 0,
+          armorDamageBonus: 0,
+          rofMult: 1.0
+        },
+        { 
+          name: '月影镀铬枪管', 
           rangeMult: 1.3,
           damageBonus: 0,
           armorDamageBonus: 0,
@@ -347,7 +390,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 'RIP45'],
+      allowedBullets: [1, 2, 3, 4, 'RIP45', 'ACP SUPER'],
     },
     {
       name: 'K416',
@@ -402,7 +445,22 @@ export const weapons = [
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
-        }
+        },
+        { 
+          name: '刺客高级枪管', 
+          ranges: [40, 60, Infinity, Infinity],
+          decays: [1.0, 0.85, 0.75, 0.75, 0.75],
+          rangeMult: 1,
+          velocityAdd: 120,
+          damageBonus: 8,
+          armorDamageBonus: 0,
+          rofMult: 0.7,
+          partMultAdd: { head: -0.2, stomach: 0.1, limbs: 0.2},
+          burstCount: 4,
+          burstInternalROF: 845,
+          burstInterval: 0.14,
+          fireMode: 'burst'
+        },
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
       allowedBullets: [1, 2, 3, 4, 5],
@@ -749,7 +807,7 @@ export const weapons = [
       triggerDelay: 0,
       barrels: [], 
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      allowedBullets: [1, 2, 3, 4, 5, 'BT +P'],
     },
     {
       name: 'QJB201高导',
@@ -880,7 +938,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      allowedBullets: [1, 2, 3, 4, 5, 'BT +P'],
     },
     {
       name: 'M4A1',
@@ -898,7 +956,8 @@ export const weapons = [
           rangeMult: 1.18,
           damageBonus: 0,
           armorDamageBonus: 0,
-          rofMult: 1.0
+          rofMult: 1.0,
+          partMultAdd: { head: 0.6},
         },
         { 
           name: 'AR战壕标准枪管组合', 
@@ -923,7 +982,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      allowedBullets: [1, 2, 3, 4, 5,'BT +P'],
     },
     {
       name: 'CAR-15',
@@ -941,7 +1000,8 @@ export const weapons = [
           rangeMult: 1.18,
           damageBonus: 0,
           armorDamageBonus: 0,
-          rofMult: 1.0
+          rofMult: 1.0,
+          partMultAdd: { head: 0.6},
         },
         { 
           name: 'AR战壕标准枪管组合', 
@@ -1021,6 +1081,16 @@ export const weapons = [
           damageBonus: 0,
           armorDamageBonus: 0,
           rofMult: 1.0
+        },
+        { 
+          name: '战斧重型枪管', 
+          rangeMult: 1,
+          velocityAdd: 160,
+          damageBonus: 19,
+          armorDamageBonus: 15,
+          partMultAdd: { head: 0.15, stomach: -0.2, limbs: -0.2},
+          rofMult: 0.8,
+
         }
       ],
       mult: { head: 1.6, chest: 1, stomach: 0.9, limbs: 0.45 },
@@ -1125,7 +1195,7 @@ export const weapons = [
         }
       ],
       mult: { head: 1.9, chest: 1, stomach: 0.9, limbs: 0.4 },
-      allowedBullets: [1, 2, 3, 4, 5],
+      allowedBullets: [1, 2, 3, 4, 5, 'BT +P'],
     },
     {
       name: 'QBZ95-1',

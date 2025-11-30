@@ -34,6 +34,7 @@ export const CHART_COLORS = {
   NO_MISS_FIRE: 'rgba(54, 162, 235, 0.7)',
   EMPTY_DELAY: 'rgba(75, 192, 192, 0.7)',
   FLIGHT_DELAY: 'rgba(255, 159, 64, 0.7)',
+  BURST_INTERVAL: 'rgba(255, 99, 132, 0.7)',
   TRIGGER_DELAY: 'rgba(153, 102, 255, 0.7)'
 };
 

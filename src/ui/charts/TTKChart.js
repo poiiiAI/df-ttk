@@ -42,18 +42,19 @@ export class TTKChart {
       type: 'bar',
       data: {
         labels: [], 
-        datasets: [
-          { label: '无空枪射击延迟', backgroundColor: CHART_COLORS.NO_MISS_FIRE, data: [] },
-          { label: '平均空枪延迟', backgroundColor: CHART_COLORS.EMPTY_DELAY, data: [] },
-          { label: '飞行延迟', backgroundColor: CHART_COLORS.FLIGHT_DELAY, data: [] },
-          { label: '扳机延迟', backgroundColor: CHART_COLORS.TRIGGER_DELAY, data: [] }
-        ]
+      datasets: [
+        { label: '无空枪射击延迟', backgroundColor: CHART_COLORS.NO_MISS_FIRE, data: [] },
+        { label: '平均连发间隔', backgroundColor: CHART_COLORS.BURST_INTERVAL, data: [] },
+        { label: '平均空枪延迟', backgroundColor: CHART_COLORS.EMPTY_DELAY, data: [] },
+        { label: '飞行延迟', backgroundColor: CHART_COLORS.FLIGHT_DELAY, data: [] },
+        { label: '扳机延迟', backgroundColor: CHART_COLORS.TRIGGER_DELAY, data: [] }
+      ]
       },
       options: {
         layout: { padding: { top: CHART_CONFIG.PADDING_TOP } },
         plugins: {
           datalabels: { 
-            display: ctx => ctx.datasetIndex === 3, 
+            display: ctx => ctx.datasetIndex === 4, 
             anchor: 'end', 
             align: 'end', 
             color: '#000', 
@@ -87,26 +88,118 @@ export class TTKChart {
     this.updateChartData(newResults);
   }
 
+  /**
+   * 计算TTK的各个组成部分
+   * 
+   * 将平均TTK时间分解为：
+   * - 飞行延迟：子弹飞行时间
+   * - 无空枪射击延迟：命中之间的间隔时间
+   * - 连发间隔：连发之间的间隔时间（仅连发模式）
+   * - 平均空枪延迟：未命中导致的延迟
+   * - 扳机延迟：开火前的延迟
+   * 
+   * 关键：从 avgTime 反推各部分，确保各部分之和等于 avgTime
+   * 
+   * @param {Object} stats - 统计结果 { weapon, avgTime, avgShots, avgMisses, avgBurstInterval }
+   * @param {Object} params - 参数 { distance, triggerDelayEnable }
+   * @returns {Object} 包含各部分延迟的结果对象
+   */
   calculateDelays(stats, params) {
-    const { weapon: w, avgTime, avgShots, avgMisses } = stats;
-    const flight = params.distance / w.velocity;
-    const interval = TIME_UNITS.MINUTES_TO_SECONDS / w.rof;
-    const emptyDelay = interval * avgMisses;
-    const triggerDelay = params.triggerDelayEnable ? w.triggerDelay / 1000 : 0;
-    const avgHits = avgShots - avgMisses;
-    const noMissFireDelay = interval * (avgHits - 1);
-    const totalTime = avgTime + triggerDelay;
+    const { weapon, avgTime, avgShots, avgMisses, avgBurstInterval } = stats;
+    
+    // 基础延迟计算
+    const flight = params.distance / weapon.velocity;
+    const triggerDelay = params.triggerDelayEnable ? weapon.triggerDelay / 1000 : 0;
+    const burstInterval = avgBurstInterval || 0;
+    
+    // 判断是否为连发模式
+    const isBurstMode = weapon.fireMode === 'burst' && weapon.burstCount && weapon.burstInternalROF;
+    
+    // 计算射击延迟（命中延迟 + 空枪延迟）
+    const { noMissFireDelay, emptyDelay } = this._calculateShootingDelays(
+      weapon, avgTime, avgShots, avgMisses, flight, burstInterval, isBurstMode
+    );
     
     return { 
-      name: w.name, 
-      weapon: w, 
+      name: weapon.name, 
+      weapon, 
       noMissFireDelay, 
       flight, 
       emptyDelay, 
+      burstInterval,
       triggerDelay, 
       avgShots, 
-      totalTime
+      totalTime: avgTime + triggerDelay
     };
+  }
+
+  /**
+   * 计算射击延迟（命中间隔 + 空枪间隔）
+   * 
+   * 核心思路：
+   * 1. 从 avgTime 反推所有间隔时间：allIntervalTime = avgTime - flight - burstInterval
+   * 2. 将所有间隔时间按命中/空枪比例分配
+   * 
+   * @private
+   */
+  _calculateShootingDelays(weapon, avgTime, avgShots, avgMisses, flight, burstInterval, isBurstMode) {
+    // 从总时间中减去已知部分，得到所有间隔时间
+    const allIntervalTime = isBurstMode 
+      ? avgTime - flight - burstInterval
+      : avgTime - flight;
+    
+    // 无空枪时，所有间隔时间都是命中间隔
+    if (avgMisses === 0) {
+      return { noMissFireDelay: allIntervalTime, emptyDelay: 0 };
+    }
+    
+    // 有空枪时，按比例分配
+    if (isBurstMode) {
+      return this._calculateBurstModeDelays(weapon, avgShots, avgMisses, allIntervalTime);
+    } else {
+      return this._calculateAutoModeDelays(avgShots, avgMisses, allIntervalTime);
+    }
+  }
+
+  /**
+   * 计算连发模式下的射击延迟
+   * @private
+   */
+  _calculateBurstModeDelays(weapon, avgShots, avgMisses, allIntervalTime) {
+    // 计算连发间隔数量
+    const burstIntervalCount = Math.floor((avgShots - 1) / weapon.burstCount);
+    // 计算总间隔数（不包括连发间隔，因为已经单独计算了）
+    const totalIntervalCount = (avgShots - 1) - burstIntervalCount;
+    
+    if (totalIntervalCount <= 0) {
+      return { noMissFireDelay: 0, emptyDelay: 0 };
+    }
+    
+    // 按空枪比例分配间隔时间
+    const missRatio = avgMisses / totalIntervalCount;
+    const emptyDelay = allIntervalTime * missRatio;
+    const noMissFireDelay = allIntervalTime * (1 - missRatio);
+    
+    return { noMissFireDelay, emptyDelay };
+  }
+
+  /**
+   * 计算全自动模式下的射击延迟
+   * @private
+   */
+  _calculateAutoModeDelays(avgShots, avgMisses, allIntervalTime) {
+    const totalIntervalCount = avgShots - 1;
+    
+    if (totalIntervalCount <= 0) {
+      return { noMissFireDelay: 0, emptyDelay: 0 };
+    }
+    
+    // 按空枪比例分配间隔时间
+    const missRatio = avgMisses / totalIntervalCount;
+    const emptyDelay = allIntervalTime * missRatio;
+    const noMissFireDelay = allIntervalTime * (1 - missRatio);
+    
+    return { noMissFireDelay, emptyDelay };
   }
 
   calculateRankChanges(newResults) {
@@ -124,7 +217,8 @@ export class TTKChart {
 
   updateChartData(newResults) {
     this.chart.data.labels = newResults.map(r => r.name);
-    const keys = ['noMissFireDelay', 'emptyDelay', 'flight', 'triggerDelay'];
+    // 修复：keys顺序要与数据集顺序匹配
+    const keys = ['noMissFireDelay', 'burstInterval', 'emptyDelay', 'flight', 'triggerDelay'];
     this.chart.data.datasets.forEach((ds, i) => {
       ds.data = newResults.map(r => r[keys[i]]);
     });
@@ -135,7 +229,7 @@ export class TTKChart {
     if (chart.config.type !== 'bar') return;
     
     const { ctx } = chart;
-    const meta = chart.getDatasetMeta(3);
+    const meta = chart.getDatasetMeta(4);
     
     meta.data.forEach((bar, i) => {
       const r = this.lastResults[i];

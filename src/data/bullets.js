@@ -109,5 +109,27 @@ export const bulletData = {
       5: { armorMult: 1, pen: 0.4 }, 
       6: { armorMult: 1, pen: 0.3 } 
     } 
-  }
+  },
+  'BT +P': { 
+    base: 1.1, 
+    armor: { 
+      1: { armorMult: 1, pen: 1 }, 
+      2: { armorMult: 1, pen: 1 }, 
+      3: { armorMult: 1, pen: 0.75 }, 
+      4: { armorMult: 1, pen: 0.5 }, 
+      5: { armorMult: 1, pen: 0 }, 
+      6: { armorMult: 0.6, pen: 0 } 
+    } 
+  },
+  'ACP SUPER': { 
+    base: 0.85, 
+    armor: { 
+      1: { armorMult: 1.1, pen: 1 }, 
+      2: { armorMult: 1.1, pen: 1 }, 
+      3: { armorMult: 1.1, pen: 1 }, 
+      4: { armorMult: 1.1, pen: 0.75 }, 
+      5: { armorMult: 1.1, pen: 0.5 }, 
+      6: { armorMult: 1.3, pen: 0 } 
+    } 
+  },
 };

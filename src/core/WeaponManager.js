@@ -195,8 +195,8 @@ export class WeaponManager {
       velocityMult *= (1 + precisionValue);
       
       let rofMult = barrel ? barrel.rofMult : 1.0;
-      let damageBonus = barrel ? barrel.damageBonus : 0;
-      let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
+      let damageBonus = barrel && barrel.damageBonus !== undefined ? barrel.damageBonus : 0;
+      let armorDamageBonus = barrel && barrel.armorDamageBonus !== undefined ? barrel.armorDamageBonus : 0;
       
       // 仅加法：部位倍率与扳机延迟
       const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
@@ -208,26 +208,67 @@ export class WeaponManager {
       const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
       const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
       
-      // 按加法或倍率计算射程与初速
-      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      // 处理射程（ranges）
+      // 如果枪管定义了 ranges，优先使用枪管的值；否则按原来的逻辑计算
+      let newRanges;
+      if (barrel && Array.isArray(barrel.ranges) && barrel.ranges.length > 0) {
+        // 枪管定义了特殊射程，直接使用
+        newRanges = barrel.ranges;
+      } else {
+        // 使用原来的计算逻辑（倍率或加法）
+        const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+        newRanges = hasRangeAdd
+          ? w.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+          : w.ranges.map(r => r * rangeMult);
+      }
+      
+      // 处理衰减系数（decays）
+      // 如果枪管定义了 decays，优先使用枪管的值；否则使用武器的值
+      const newDecays = (barrel && Array.isArray(barrel.decays) && barrel.decays.length > 0)
+        ? barrel.decays
+        : w.decays;
+      
+      // 按加法或倍率计算初速
       const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
-      const newRanges = hasRangeAdd
-        ? w.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
-        : w.ranges.map(r => r * rangeMult);
       const newVelocity = hasVelocityAdd
         ? Math.round((w.velocity + barrel.velocityAdd) * velocityMult)
         : w.velocity * velocityMult;
+
+      // 处理开火模式（fireMode）
+      let fireMode = w.fireMode || null;  // 默认使用武器的fireMode
+      if (barrel && barrel.fireMode !== undefined) {
+        // 如果枪管指定了fireMode，则使用枪管的fireMode
+        fireMode = barrel.fireMode;
+      }
+      
+      // 处理连发属性
+      // 如果枪管定义了连发属性，优先使用枪管的属性；否则使用武器的属性
+      let burstCount = (barrel && barrel.burstCount !== undefined) ? barrel.burstCount : w.burstCount;
+      let burstInternalROF = (barrel && barrel.burstInternalROF !== undefined) ? barrel.burstInternalROF : w.burstInternalROF;
+      let burstInterval = (barrel && barrel.burstInterval !== undefined) ? barrel.burstInterval : w.burstInterval;
+      
+      // 如果变成全自动，清除连发属性
+      if (fireMode === 'auto') {
+        burstCount = undefined;
+        burstInternalROF = undefined;
+        burstInterval = undefined;
+      }
 
       return {
         ...w,
         velocity: newVelocity,
         ranges: newRanges,
+        decays: newDecays,
         rof: w.rof * rofMult,
         flesh: w.flesh + damageBonus,
         armor: w.armor + armorDamageBonus,
         hitRate: hitRate != null ? hitRate : w.hitRate,
         triggerDelay: newTriggerDelay,
-        mult: newMult
+        mult: newMult,
+        fireMode: fireMode,
+        burstCount: burstCount,
+        burstInternalROF: burstInternalROF,
+        burstInterval: burstInterval
       };
     });
 
@@ -253,8 +294,8 @@ export class WeaponManager {
       velocityMult *= (1 + precisionValue);
       
       let rofMult = barrel ? barrel.rofMult : 1.0;
-      let damageBonus = barrel ? barrel.damageBonus : 0;
-      let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
+      let damageBonus = barrel && barrel.damageBonus !== undefined ? barrel.damageBonus : 0;
+      let armorDamageBonus = barrel && barrel.armorDamageBonus !== undefined ? barrel.armorDamageBonus : 0;
       
       // 仅加法：部位倍率与扳机延迟（副本）
       const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
@@ -266,26 +307,66 @@ export class WeaponManager {
       const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
       const newTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
       
-      // 按加法或倍率计算射程与初速（副本）
-      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      // 处理射程（ranges）- 副本武器
+      // 如果枪管定义了 ranges，优先使用枪管的值；否则按原来的逻辑计算
+      let newRanges;
+      if (barrel && Array.isArray(barrel.ranges) && barrel.ranges.length > 0) {
+        // 枪管定义了特殊射程，直接使用
+        newRanges = barrel.ranges;
+      } else {
+        // 使用原来的计算逻辑（倍率或加法）
+        const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+        newRanges = hasRangeAdd
+          ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+          : clone.ranges.map(r => r * rangeMult);
+      }
+      
+      // 处理衰减系数（decays）- 副本武器
+      // 如果枪管定义了 decays，优先使用枪管的值；否则使用武器的值
+      const newDecays = (barrel && Array.isArray(barrel.decays) && barrel.decays.length > 0)
+        ? barrel.decays
+        : clone.decays;
+      
+      // 按加法或倍率计算初速（副本）
       const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
-      const newRanges = hasRangeAdd
-        ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
-        : clone.ranges.map(r => r * rangeMult);
       const newVelocity = hasVelocityAdd
         ? Math.round((clone.velocity + barrel.velocityAdd) * velocityMult)
         : clone.velocity * velocityMult;
+
+      // 处理开火模式（与原始武器相同逻辑）
+      let fireMode = clone.fireMode || null;
+      if (barrel && barrel.fireMode !== undefined) {
+        fireMode = barrel.fireMode;
+      }
+      
+      // 处理连发属性
+      // 优先使用枪管定义的连发属性，如果枪管没有定义则使用武器的属性
+      let burstCount = (barrel && barrel.burstCount !== undefined) ? barrel.burstCount : clone.burstCount;
+      let burstInternalROF = (barrel && barrel.burstInternalROF !== undefined) ? barrel.burstInternalROF : clone.burstInternalROF;
+      let burstInterval = (barrel && barrel.burstInterval !== undefined) ? barrel.burstInterval : clone.burstInterval;
+      
+      // 如果变成全自动，清除连发属性
+      if (fireMode === 'auto') {
+        burstCount = undefined;
+        burstInternalROF = undefined;
+        burstInterval = undefined;
+      }
 
       const result = {
         ...clone,
         velocity: newVelocity,
         ranges: newRanges,
+        decays: newDecays,
         rof: clone.rof * rofMult,
         flesh: clone.flesh + damageBonus,
         armor: clone.armor + armorDamageBonus,
         hitRate: hitRate != null ? hitRate : clone.hitRate,
         triggerDelay: newTriggerDelay,
-        mult: newMult
+        mult: newMult,
+        fireMode: fireMode,
+        burstCount: burstCount,
+        burstInternalROF: burstInternalROF,
+        burstInterval: burstInterval
       };
       
       return result;
@@ -359,8 +440,8 @@ export class WeaponManager {
     }
     
     let rofMult = barrel ? barrel.rofMult : 1.0;
-    let damageBonus = barrel ? barrel.damageBonus : 0;
-    let armorDamageBonus = barrel ? barrel.armorDamageBonus : 0;
+    let damageBonus = barrel && barrel.damageBonus !== undefined ? barrel.damageBonus : 0;
+    let armorDamageBonus = barrel && barrel.armorDamageBonus !== undefined ? barrel.armorDamageBonus : 0;
     
     // 展示用：仅加法的部位倍率与扳机延迟
     const partAdd = barrel && barrel.partMultAdd ? barrel.partMultAdd : null;
@@ -372,11 +453,27 @@ export class WeaponManager {
     const delayDelta = barrel && typeof barrel.triggerDelayDelta === 'number' ? barrel.triggerDelayDelta : 0;
     const displayTriggerDelay = Math.max(0, Math.round(baseTrigger + delayDelta));
 
-    const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+    // 处理射程（ranges）- 显示数据
+    // 如果枪管定义了 ranges，优先使用枪管的值；否则按原来的逻辑计算
+    let displayRanges;
+    if (barrel && Array.isArray(barrel.ranges) && barrel.ranges.length > 0) {
+      // 枪管定义了特殊射程，直接使用
+      displayRanges = barrel.ranges;
+    } else {
+      // 使用原来的计算逻辑（倍率或加法）
+      const hasRangeAdd = barrel && typeof barrel.rangeAdd === 'number';
+      displayRanges = hasRangeAdd
+        ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
+        : clone.ranges.map(r => Math.round(r * rangeMult));
+    }
+    
+    // 处理衰减系数（decays）- 显示数据
+    // 如果枪管定义了 decays，优先使用枪管的值；否则使用武器的值
+    const displayDecays = (barrel && Array.isArray(barrel.decays) && barrel.decays.length > 0)
+      ? barrel.decays
+      : clone.decays;
+    
     const hasVelocityAdd = barrel && typeof barrel.velocityAdd === 'number';
-    const displayRanges = hasRangeAdd
-      ? clone.ranges.map(r => (r === Infinity ? Infinity : Math.round(r * rangeMult + barrel.rangeAdd)))
-      : clone.ranges.map(r => Math.round(r * rangeMult));
     const displayVelocity = hasVelocityAdd
       ? Math.round((clone.velocity + barrel.velocityAdd) * velocityMult)
       : Math.round(clone.velocity * velocityMult);
@@ -384,6 +481,7 @@ export class WeaponManager {
     const calculatedData = {
       velocity: displayVelocity,
       ranges: displayRanges,
+      decays: displayDecays,
       rof: Math.round(clone.rof * rofMult * 100) / 100, 
       flesh: Math.round(clone.flesh + damageBonus),
       armor: Math.round(clone.armor + armorDamageBonus),
