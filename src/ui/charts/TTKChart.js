@@ -287,7 +287,10 @@ export class TTKChart {
         const currentRank = idx + 1;
         const totalWeapons = this.lastResults.length;
         
-        return [
+        // 判断是否为半自动武器（连发模式）
+        const isSemiAuto = r.weapon.fireMode === 'burst' && r.weapon.burstCount && r.weapon.burstInternalROF;
+        
+        const tooltipLines = [
           `当前排名: ${currentRank}/${totalWeapons}`,
           `子弹初速: ${Math.round(r.weapon.velocity)} m/s`,
           `肉伤: ${r.weapon.flesh}`,
@@ -295,6 +298,18 @@ export class TTKChart {
           `射速: ${r.weapon.rof}`,
           `平均致死枪数: ${r.avgShots.toFixed(2)}`
         ];
+        
+        // 半自动武器时显示连发间隔和内部射速
+        if (isSemiAuto) {
+          const burstInterval = r.weapon.burstInterval || 0;
+          const burstInternalROF = r.weapon.burstInternalROF || 0;
+          tooltipLines.push(
+            `连发间隔: ${formatTime(burstInterval, 'ms')}`,
+            `内部射速: ${burstInternalROF}`
+          );
+        }
+        
+        return tooltipLines;
       }
     };
   }
